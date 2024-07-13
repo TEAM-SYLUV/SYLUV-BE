@@ -1,4 +1,4 @@
-package com.foodgo.coremodule;
+package com.likelion.coremodule;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

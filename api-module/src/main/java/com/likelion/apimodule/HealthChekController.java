@@ -1,4 +1,4 @@
-package com.foodgo.apimodule;
+package com.likelion.apimodule;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

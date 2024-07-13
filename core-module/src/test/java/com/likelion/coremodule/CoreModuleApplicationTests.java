@@ -1,4 +1,4 @@
-package com.foodgo.coremodule;
+package com.likelion.coremodule;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
