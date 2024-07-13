@@ -1,1 +1,4 @@
 rootProject.name = 'likelion'
+include 'api-module'
+include 'common-module'
+include 'core-module'
