@@ -1,21 +1,24 @@
 spring:
   profiles:
-    active: prod
+    active: local
   jpa:
     open-in-view: false
     hibernate:
       ddl-auto: none
+
+  main:
+    allow-bean-definition-overriding: true
 
 ---
 spring:
   config:
     activate:
       on-profile: local
-    import: application-local.yml
+    import: application-local.yml, application-redis.yml, application-oauth.yml
 
 ---
 spring:
   config:
     activate:
       on-profile: prod
-    import: application-prod.yml
+    import: application-prod.yml, application-redis.yml, application-oauth.yml
