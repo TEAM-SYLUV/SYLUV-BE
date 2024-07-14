@@ -28,19 +28,6 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-    private final String[] swaggerUrls = {"/swagger-ui/**"};
-    private final String[] authUrls = {
-            "/",
-            "/h2-console",
-            "/v1/users/**"
-    };
-    private final String[] allowedUrls = Stream.concat(Arrays.stream(swaggerUrls), Arrays.stream(authUrls))
-            .toArray(String[]::new);
-
-    private final AuthenticationConfiguration authenticationConfiguration;
-    private final JwtUtil jwtUtil;
-    private final RedisUtil redisUtil;
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
@@ -73,8 +60,10 @@ public class SecurityConfig {
         // 경로별 인가 작업
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(allowedUrls).permitAll()
-                        .requestMatchers("/**").authenticated()
+//                        .requestMatchers("/swagger-ui/**").permitAll()
+//                        .requestMatchers("/api-docs").permitAll()
+//                        .requestMatchers("/v1/users/login/**").permitAll()
+                        .requestMatchers("/v1/api/**").authenticated()
                         .anyRequest().permitAll()
                 );
 
