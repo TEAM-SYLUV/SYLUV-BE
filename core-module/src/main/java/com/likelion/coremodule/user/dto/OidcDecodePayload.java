@@ -5,6 +5,7 @@ public record OidcDecodePayload(
         String aud,
         String sub,
         String nickname,
-        String picture
+        String picture,
+        String email
 ) {
 }

@@ -27,7 +27,7 @@ public class OidcJwtDecoder {
 
     private static Jwt<Header, Claims> getUnsignedTokenClaims(String token, String iss, String aud) {
         try {
-            return Jwts.parser()
+            return Jwts.parserBuilder()
                     .requireAudience(aud)
                     .requireIssuer(iss)
                     .build()
@@ -50,7 +50,7 @@ public class OidcJwtDecoder {
 
     public static Jws<Claims> getOidcTokenJws(String token, String modulus, String exponent) {
         try {
-            return Jwts.parser()
+            return Jwts.parserBuilder()
                     .setSigningKey(getRsaPublicKey(modulus, exponent))
                     .build()
                     .parseClaimsJws(token);
@@ -64,12 +64,16 @@ public class OidcJwtDecoder {
 
     public static OidcDecodePayload getOidcTokenBody(String token, String modulus, String exponent) {
         Claims body = getOidcTokenJws(token, modulus, exponent).getBody();
+
+        System.out.println(body);
+
         return new OidcDecodePayload(
                 body.getIssuer(),
                 body.getAudience().toString(),
                 body.getSubject(),
                 body.get("nickname", String.class),
-                body.get("picture", String.class)
+                body.get("picture", String.class),
+                body.get("email", String.class)
         );
     }
 

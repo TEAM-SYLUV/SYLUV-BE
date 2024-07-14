@@ -20,7 +20,7 @@ public class KakaoOidcKeyClient {
     @Cacheable(cacheNames = "KakaoOidcKey", cacheManager = "oidcCacheManager")
     @GetMapping("/jwks.json")
     public OidcPublicKeyListResponse getKakaoOidcOpenKeys() {
-        String url = "http://your-base-url/.well-known/jwks.json"; // Replace with your actual base URL
+        String url = "https://kauth.kakao.com/.well-known/jwks.json"; // Replace with your actual base URL
         return restTemplate.getForObject(url, OidcPublicKeyListResponse.class);
     }
 }
