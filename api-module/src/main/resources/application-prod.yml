@@ -6,9 +6,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://foodgo-database.cfe8w8i089jb.ap-northeast-2.rds.amazonaws.com:3306/foodgo_database
-    username: foodgodatabase
-    password: foodgodatabase
+    url: jdbc:mysql://syluv-database.cb2sy0ccsa47.ap-northeast-2.rds.amazonaws.com:3306/syluv_database
+    username: admin
+    password: syluvdatabase
 
   jpa:
     properties:
