@@ -1,0 +1,37 @@
+spring:
+
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://syluv-database.cb2sy0ccsa47.ap-northeast-2.rds.amazonaws.com:3306/syluv_database
+    username: admin
+    password: syluvdatabase
+
+  jpa:
+    properties:
+      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+      hibernate:
+        format_sql: true
+        hbm2ddl:
+          auto: update
+        show_sql: true
+
+  data:
+    redis:
+      host: redis
+      port: 6379
+
+security:
+  jwt:
+    secret: aGFuZXVtLWZvb2Rnby1qd3Qtc2VjcmV0LWtleQo=
+    token:
+      access-expiration-time: 86400
+      refresh-expiration-time: 86400
+
+logging:
+  level:
+    org:
+      hibernate.sql: debug

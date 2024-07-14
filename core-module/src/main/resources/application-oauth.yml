@@ -1,0 +1,14 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    openfeign:
+      client:
+        config:
+          kakao-oidc-key-client:
+            url: https://kauth.kakao.com
+
+oauth:
+  kakao:
+    iss: https://kauth.kakao.com
+    client-id: 3eb7359e3155987d42f0855e0319af33
