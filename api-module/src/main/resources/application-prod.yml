@@ -19,11 +19,6 @@ spring:
           auto: update
         show_sql: true
 
-  data:
-    redis:
-      host: redis
-      port: 6379
-
 security:
   jwt:
     secret: aGFuZXVtLWZvb2Rnby1qd3Qtc2VjcmV0LWtleQo=
