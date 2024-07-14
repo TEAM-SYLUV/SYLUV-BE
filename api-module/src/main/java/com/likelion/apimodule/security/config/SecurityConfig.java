@@ -1,18 +1,13 @@
 package com.likelion.apimodule.security.config;
 
-import com.likelion.apimodule.security.filter.CustomLogoutHandler;
-import com.likelion.apimodule.security.filter.JwtAuthenticationFilter;
-import com.likelion.apimodule.security.filter.JwtExceptionFilter;
 import com.likelion.apimodule.security.util.JwtUtil;
 import com.likelion.commonmodule.exception.jwt.JwtAccessDeniedHandler;
 import com.likelion.commonmodule.exception.jwt.JwtAuthenticationEntryPoint;
 import com.likelion.commonmodule.redis.util.RedisUtil;
 import com.likelion.commonmodule.security.config.CorsConfig;
-import com.likelion.commonmodule.security.util.HttpResponseUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,8 +16,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 import java.util.Arrays;
 import java.util.stream.Stream;

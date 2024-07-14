@@ -34,7 +34,7 @@ public class LoginUseCase {
 
     private User createNewKakaoUser(final OidcDecodePayload oidcDecodePayload) {
 
-        final User newUser = User.createSocialUser(oidcDecodePayload.sub());
+        final User newUser = User.createSocialUser(oidcDecodePayload.sub(), oidcDecodePayload.nickname(), oidcDecodePayload.picture(), oidcDecodePayload.email());
         return userRepository.save(newUser);
     }
 }

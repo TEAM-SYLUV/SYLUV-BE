@@ -1,23 +1,24 @@
 package com.likelion.apimodule.security.util;
 
 import com.likelion.commonmodule.exception.jwt.SecurityCustomException;
-import com.likelion.commonmodule.exception.jwt.dto.JwtPair;
 import com.likelion.commonmodule.redis.util.RedisUtil;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import static com.likelion.commonmodule.exception.jwt.SecurityErrorCode.INVALID_TOKEN;
-import static com.likelion.commonmodule.exception.jwt.SecurityErrorCode.TOKEN_EXPIRED;
 
 @Component
 @Slf4j
@@ -36,8 +37,7 @@ public class JwtUtil {
             @Value("${security.jwt.token.refresh-expiration-time}") Long refresh,
             RedisUtil redis) {
 
-        secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8),
-                Jwts.SIG.HS256.key().build().getAlgorithm());
+        secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         accessExpMs = access;
         refreshExpMs = refresh;
         redisUtil = redis;
@@ -48,14 +48,12 @@ public class JwtUtil {
         Instant expiration = issuedAt.plusMillis(accessExpMs);
 
         return Jwts.builder()
-                .header()
-                .add("alg", "HS256")
-                .add("typ", "JWT")
-                .and()
-                .subject(subId)
+                .setHeaderParam("alg", "HS256")
+                .setHeaderParam("typ", "JWT")
+                .setSubject(subId)
                 .claim("nickname", nickname)
-                .issuedAt(Date.from(issuedAt))
-                .expiration(Date.from(expiration))
+                .setIssuedAt(Date.from(issuedAt))
+                .setExpiration(Date.from(expiration))
                 .signWith(secretKey)
                 .compact();
     }
@@ -65,14 +63,12 @@ public class JwtUtil {
         Instant expiration = issuedAt.plusMillis(refreshExpMs);
 
         String refreshToken = Jwts.builder()
-                .header()
-                .add("alg", "HS256")
-                .add("typ", "JWT")
-                .and()
-                .subject(subId)
+                .setHeaderParam("alg", "HS256")
+                .setHeaderParam("typ", "JWT")
+                .setSubject(subId)
                 .claim("nickname", nickname)
-                .issuedAt(Date.from(issuedAt))
-                .expiration(Date.from(expiration))
+                .setIssuedAt(Date.from(issuedAt))
+                .setExpiration(Date.from(expiration))
                 .signWith(secretKey)
                 .compact();
 
@@ -85,22 +81,6 @@ public class JwtUtil {
 
         return refreshToken;
     }
-
-//    public JwtPair reissueToken(String refreshToken) {
-//        try {
-//            validateRefreshToken(refreshToken);
-//            log.info("[*] Valid RefreshToken");
-//
-//            return new JwtPair(
-//                    createJwtAccessToken(tempCustomUserDetails),
-//                    createJwtRefreshToken(tempCustomUserDetails)
-//            );
-//        } catch (IllegalArgumentException iae) {
-//            throw new SecurityCustomException(INVALID_TOKEN, iae);
-//        } catch (ExpiredJwtException eje) {
-//            throw new SecurityCustomException(TOKEN_EXPIRED, eje);
-//        }
-//    }
 
     public String resolveAccessToken(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
@@ -118,7 +98,7 @@ public class JwtUtil {
         // refreshToken 유효성 검증
         String email = getEmail(refreshToken);
 
-        //redis에 refreshToken 있는지 검증
+        // redis에 refreshToken 있는지 검증
         if (!redisUtil.hasKey(email + "_refresh_token")) {
             log.warn("[*] case : Invalid refreshToken");
             throw new SecurityCustomException(INVALID_TOKEN);
@@ -148,7 +128,11 @@ public class JwtUtil {
 
     private Claims getClaims(String token) {
         try {
-            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
+            return Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
         } catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException e) {
             throw new SecurityCustomException(INVALID_TOKEN, e);
         }
