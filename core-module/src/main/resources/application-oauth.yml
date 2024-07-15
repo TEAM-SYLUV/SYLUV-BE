@@ -11,4 +11,4 @@ spring:
 oauth:
   kakao:
     iss: https://kauth.kakao.com
-    client-id: 3eb7359e3155987d42f0855e0319af33
+    client-id: d0b1a662419cddfea6be47ef2d84d2ee
