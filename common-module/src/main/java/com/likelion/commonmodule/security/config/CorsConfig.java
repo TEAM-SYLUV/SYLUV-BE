@@ -18,6 +18,7 @@ public class CorsConfig implements WebMvcConfigurer {
         ArrayList<String> allowedOriginPatterns = new ArrayList<>();
         allowedOriginPatterns.add("http://localhost:8080");
         allowedOriginPatterns.add("http://localhost:3000");
+        allowedOriginPatterns.add("https://syluv.link");
 
         ArrayList<String> allowedHttpMethods = new ArrayList<>();
         allowedHttpMethods.add("GET");
