@@ -1,9 +1,7 @@
 package com.likelion.apimodule.security.config;
 
-import com.likelion.apimodule.security.util.JwtUtil;
 import com.likelion.commonmodule.exception.jwt.JwtAccessDeniedHandler;
 import com.likelion.commonmodule.exception.jwt.JwtAuthenticationEntryPoint;
-import com.likelion.commonmodule.redis.util.RedisUtil;
 import com.likelion.commonmodule.security.config.CorsConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -16,9 +14,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 @Configuration
 @EnableWebSecurity
@@ -63,8 +58,8 @@ public class SecurityConfig {
 //                        .requestMatchers("/swagger-ui/**").permitAll()
 //                        .requestMatchers("/api-docs").permitAll()
 //                        .requestMatchers("/v1/users/login/**").permitAll()
-                        .requestMatchers("/v1/api/**").authenticated()
-                        .anyRequest().permitAll()
+                                .requestMatchers("/v1/api/**").authenticated()
+                                .anyRequest().permitAll()
                 );
 
         // Jwt Filters
