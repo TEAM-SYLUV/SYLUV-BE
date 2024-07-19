@@ -15,8 +15,9 @@ public class Market {
     @Column(name = "market_id")
     private Long id;
 
-    private String market_name;
-    private String location;
-    private String opening_hours;
+    private String name;
+    private String description;
+    private String startHour;
+    private String closeHour;
     private String contact;
 }
