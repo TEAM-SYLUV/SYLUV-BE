@@ -6,18 +6,17 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://syluv-database.cb2sy0ccsa47.ap-northeast-2.rds.amazonaws.com:3306/syluv_database
-    username: admin
+    url: jdbc:mysql://syluv-db.cb2sy0ccsa47.ap-northeast-2.rds.amazonaws.com:3306/syluv_db
+    username: syluvdatabase
     password: syluvdatabase
 
   jpa:
+    hibernate:
+      ddl-auto: update
+      show-sql: true
+      format_sql: true
     properties:
-      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-      hibernate:
-        format_sql: true
-        hbm2ddl:
-          auto: update
-        show_sql: true
+      hibernate.dialect: org.hibernate.dialect.MySQLDialect
 
 security:
   jwt:

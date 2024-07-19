@@ -26,7 +26,7 @@ public class VisitList {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String visit_status;
+    private VisitStatus visit_status;
 
 
 }

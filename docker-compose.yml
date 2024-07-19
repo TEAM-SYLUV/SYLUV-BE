@@ -15,7 +15,7 @@ services:
     build: .
     image: anjeonghoo/syluv-app
     environment:
-      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_USERNAME=syluvdatabase
       - SPRING_DATASOURCE_PASSWORD=syluvdatabase
       - SPRING_PROFILES_ACTIVE=prod
     ports:

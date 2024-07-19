@@ -1,4 +1,5 @@
 package com.likelion.coremodule.store.domain;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.likelion.coremodule.market.domain.Market;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,9 +20,15 @@ public class Store {
     @JoinColumn(name = "market_id")
     private Market market;
 
-    private String store_name;
-    private Integer review_count;
+    private String name;
+    private Integer reviewCount;
+    private StoreCategory category;
     private String location;
-    private String opening_hours;
+    private String openHours;
     private String contact;
+
+    @JsonValue
+    public String getCategoryValue() {
+        return category.name();
+    }
 }
