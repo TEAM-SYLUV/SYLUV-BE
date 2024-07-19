@@ -37,4 +37,15 @@ public class LoginUseCase {
         final User newUser = User.createSocialUser(oidcDecodePayload.sub(), oidcDecodePayload.nickname(), oidcDecodePayload.picture(), oidcDecodePayload.email());
         return userRepository.save(newUser);
     }
+
+//    @Transactional
+//    public LoginResponse reissueToken(String refreshToken) {
+//
+//        final String token = TokenExtractUtils.extractToken(refreshToken);
+//        String reIssueAccessToken = attachAuthenticationType(jwtProvider::reIssueAccessToken, token);
+//        String reIssueRefreshToken = attachAuthenticationType(jwtProvider::reIssueRefreshToken, token);
+//        tokenDeleteService.deleteTokenByTokenValue(refreshToken);
+//
+//        return new LoginResponse(reIssueAccessToken, reIssueRefreshToken);
+//    }
 }
