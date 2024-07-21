@@ -2,7 +2,8 @@ package com.likelion.apimodule.store.dto;
 
 import java.util.List;
 
-public record StoreInfo(String name,
+public record StoreInfo(Long storeId,
+                        String name,
                         Integer reviewCount,
                         String location,
                         String openHours,

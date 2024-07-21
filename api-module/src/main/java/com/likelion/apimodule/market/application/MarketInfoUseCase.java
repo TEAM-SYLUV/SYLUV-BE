@@ -28,7 +28,9 @@ public class MarketInfoUseCase {
 
         Market market = marketQueryService.findMarket(1L);
 
-        return new MarketInfo(market.getName(),
+        return new MarketInfo(
+                market.getId(),
+                market.getName(),
                 market.getDescription(),
                 market.getStartHour(),
                 market.getCloseHour(),
