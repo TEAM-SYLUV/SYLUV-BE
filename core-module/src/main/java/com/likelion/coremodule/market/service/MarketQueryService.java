@@ -11,7 +11,6 @@ import com.likelion.coremodule.store.domain.Store;
 import com.likelion.coremodule.store.service.StoreQueryService;
 import com.likelion.coremodule.user.application.UserQueryService;
 import com.likelion.coremodule.user.domain.User;
-import com.likelion.coremodule.user.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +27,9 @@ public class MarketQueryService {
         return marketRepository.findById(id).orElseThrow(() -> new MarketException(MarketErrorCode.NO_MARKET_INFO));
     }
 
-    public void saveVisitList(Long storeId) {
+    public void saveVisitList(Long storeId, String email) {
 
-        String email = UserUtils.getEmailFromAccessUser();
         User user = userQueryService.findByEmail(email);
-
         Store store = storeQueryService.findStoreById(storeId);
 
         final VisitList visitList = VisitList.builder()
