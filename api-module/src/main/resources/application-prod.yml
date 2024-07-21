@@ -23,7 +23,7 @@ security:
     secret: aGFuZXVtLWZvb2Rnby1qd3Qtc2VjcmV0LWtleQo=
     token:
       access-expiration-time: 86400
-      refresh-expiration-time: 86400
+      refresh-expiration-time: 604800
 
 logging:
   level:
