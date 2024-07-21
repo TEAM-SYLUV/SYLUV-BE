@@ -1,6 +1,10 @@
 package com.likelion.apimodule.store.application;
 
+import com.likelion.apimodule.store.dto.MenuDetailDTO;
+import com.likelion.apimodule.store.dto.StoreInfo;
 import com.likelion.apimodule.store.dto.StoreResponse;
+import com.likelion.coremodule.menu.domain.Menu;
+import com.likelion.coremodule.menu.service.MenuQueryService;
 import com.likelion.coremodule.store.domain.Store;
 import com.likelion.coremodule.store.domain.StoreCategory;
 import com.likelion.coremodule.store.exception.StoreErrorCode;
@@ -17,6 +21,34 @@ import java.util.List;
 public class StoreInfoUseCase {
 
     private final StoreQueryService storeQueryService;
+    private final MenuQueryService menuQueryService;
+
+    public List<StoreInfo> findStoreInfo() {
+
+        List<Store> storeList = storeQueryService.findAllStore();
+        List<StoreInfo> storeInfoList = new ArrayList<>();
+
+        for (Store store : storeList) {
+
+            List<Menu> menus = menuQueryService.findMenusByStoreId(store.getId());
+            List<MenuDetailDTO> menuDetails = menus.stream()
+                    .map(menu -> new MenuDetailDTO(menu.getName(), menu.getPrice(), menu.getContent()))
+                    .toList();
+
+            StoreInfo storeInfo = new StoreInfo(
+                    store.getName(),
+                    store.getReviewCount(),
+                    store.getLocation(),
+                    store.getOpenHours(),
+                    store.getCloseHours(),
+                    store.getContact(),
+                    menuDetails
+            );
+            storeInfoList.add(storeInfo);
+        }
+
+        return storeInfoList;
+    }
 
     public List<StoreResponse> findStoreByFilter(String search, String category) {
 
