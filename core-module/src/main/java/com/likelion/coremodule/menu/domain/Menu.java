@@ -1,7 +1,6 @@
 package com.likelion.coremodule.menu.domain;
 
 import com.likelion.coremodule.store.domain.Store;
-import com.likelion.coremodule.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
