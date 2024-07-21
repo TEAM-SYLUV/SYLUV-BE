@@ -1,6 +1,5 @@
 package com.likelion.coremodule.VisitList.domain;
 
-import com.likelion.coremodule.market.domain.Market;
 import com.likelion.coremodule.store.domain.Store;
 import com.likelion.coremodule.user.domain.User;
 import jakarta.persistence.*;
@@ -18,11 +17,11 @@ public class VisitList {
     @Column(name = "visit_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 

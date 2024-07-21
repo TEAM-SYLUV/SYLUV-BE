@@ -2,7 +2,7 @@ name: Backend CD # actions 이름
 
 on:
   push:
-    branches: [ feat/login-update ]
+    branches: [ feat/market-info ]
 
 jobs:
   deploy:
