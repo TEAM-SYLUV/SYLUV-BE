@@ -51,7 +51,7 @@ public class UserController {
     )
     @Operation(summary = "토큰 재발급  API", description = "토큰 재발급 API입니다.")
     public ApplicationResponse<String> reissue(@RequestHeader(AuthConsts.REFRESH_TOKEN_HEADER) String refreshToken) {
-//        LoginResponse response = loginUseCase.reissueToken(refreshToken);
+        LoginResponse response = loginUseCase.reissueToken(refreshToken);
         return ApplicationResponse.ok("미완");
     }
 }

@@ -28,8 +28,8 @@ public class LoginUseCase {
         final User user = userRepository.findBySubId(oidcDecodePayload.sub())
                 .orElseGet(() -> createNewKakaoUser(oidcDecodePayload));
 
-        return new LoginResponse(jwtUtil.createJwtAccessToken(oidcDecodePayload.nickname(), oidcDecodePayload.sub()),
-                jwtUtil.createJwtRefreshToken(oidcDecodePayload.nickname(), oidcDecodePayload.sub()));
+        return new LoginResponse(jwtUtil.createJwtAccessToken(oidcDecodePayload.email(), oidcDecodePayload.sub()),
+                jwtUtil.createJwtRefreshToken(oidcDecodePayload.email(), oidcDecodePayload.sub()));
     }
 
     private User createNewKakaoUser(final OidcDecodePayload oidcDecodePayload) {
@@ -38,14 +38,9 @@ public class LoginUseCase {
         return userRepository.save(newUser);
     }
 
-//    @Transactional
-//    public LoginResponse reissueToken(String refreshToken) {
-//
-//        final String token = TokenExtractUtils.extractToken(refreshToken);
-//        String reIssueAccessToken = attachAuthenticationType(jwtProvider::reIssueAccessToken, token);
-//        String reIssueRefreshToken = attachAuthenticationType(jwtProvider::reIssueRefreshToken, token);
-//        tokenDeleteService.deleteTokenByTokenValue(refreshToken);
-//
-//        return new LoginResponse(reIssueAccessToken, reIssueRefreshToken);
-//    }
+    @Transactional
+    public LoginResponse reissueToken(String refreshToken) {
+
+        return jwtUtil.reissueToken(refreshToken);
+    }
 }
