@@ -2,10 +2,8 @@ package com.likelion.apimodule.security.util;
 
 import com.likelion.commonmodule.exception.jwt.SecurityCustomException;
 import com.likelion.commonmodule.redis.util.RedisUtil;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import com.likelion.coremodule.user.dto.LoginResponse;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +17,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import static com.likelion.commonmodule.exception.jwt.SecurityErrorCode.INVALID_TOKEN;
+import static com.likelion.commonmodule.exception.jwt.SecurityErrorCode.TOKEN_EXPIRED;
 
 @Component
 @Slf4j
@@ -43,7 +42,7 @@ public class JwtUtil {
         redisUtil = redis;
     }
 
-    public String createJwtAccessToken(String nickname, String subId) {
+    public String createJwtAccessToken(String email, String subId) {
         Instant issuedAt = Instant.now();
         Instant expiration = issuedAt.plusMillis(accessExpMs);
 
@@ -51,14 +50,14 @@ public class JwtUtil {
                 .setHeaderParam("alg", "HS256")
                 .setHeaderParam("typ", "JWT")
                 .setSubject(subId)
-                .claim("nickname", nickname)
+                .claim("email", email)
                 .setIssuedAt(Date.from(issuedAt))
                 .setExpiration(Date.from(expiration))
                 .signWith(secretKey)
                 .compact();
     }
 
-    public String createJwtRefreshToken(String nickname, String subId) {
+    public String createJwtRefreshToken(String email, String subId) {
         Instant issuedAt = Instant.now();
         Instant expiration = issuedAt.plusMillis(refreshExpMs);
 
@@ -66,14 +65,14 @@ public class JwtUtil {
                 .setHeaderParam("alg", "HS256")
                 .setHeaderParam("typ", "JWT")
                 .setSubject(subId)
-                .claim("nickname", nickname)
+                .claim("email", email)
                 .setIssuedAt(Date.from(issuedAt))
                 .setExpiration(Date.from(expiration))
                 .signWith(secretKey)
                 .compact();
 
         redisUtil.saveAsValue(
-                subId + "_refresh_token",
+                email + "_refresh_token",
                 refreshToken,
                 refreshExpMs,
                 TimeUnit.MILLISECONDS
@@ -94,6 +93,35 @@ public class JwtUtil {
         return authorization.split(" ")[1];
     }
 
+    public LoginResponse reissueToken(String refreshToken) {
+        try {
+            validateRefreshToken(refreshToken);
+            log.info("[*] Valid RefreshToken");
+
+            // 삭제 로직
+            String email = getEmail(refreshToken);
+            redisUtil.delete(email + "_refresh_token");
+
+            String subId = getSubjectFromToken(refreshToken);
+
+            return new LoginResponse(
+                    createJwtAccessToken(email, subId),
+                    createJwtRefreshToken(email, subId)
+            );
+        } catch (IllegalArgumentException iae) {
+            throw new SecurityCustomException(INVALID_TOKEN, iae);
+        } catch (ExpiredJwtException eje) {
+            throw new SecurityCustomException(TOKEN_EXPIRED, eje);
+        }
+    }
+
+    public void deleteToken(String refreshToken) {
+
+        // 삭제 로직
+        String email = getEmail(refreshToken);
+        redisUtil.delete(email + "_refresh_token");
+    }
+
     public void validateRefreshToken(String refreshToken) {
         // refreshToken 유효성 검증
         String email = getEmail(refreshToken);
@@ -103,6 +131,15 @@ public class JwtUtil {
             log.warn("[*] case : Invalid refreshToken");
             throw new SecurityCustomException(INVALID_TOKEN);
         }
+    }
+
+    public String getSubjectFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getSubject();
     }
 
     public Long getId(String token) {

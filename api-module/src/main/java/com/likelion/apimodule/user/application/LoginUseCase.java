@@ -28,13 +28,26 @@ public class LoginUseCase {
         final User user = userRepository.findBySubId(oidcDecodePayload.sub())
                 .orElseGet(() -> createNewKakaoUser(oidcDecodePayload));
 
-        return new LoginResponse(jwtUtil.createJwtAccessToken(oidcDecodePayload.nickname(), oidcDecodePayload.sub()),
-                jwtUtil.createJwtRefreshToken(oidcDecodePayload.nickname(), oidcDecodePayload.sub()));
+        return new LoginResponse(jwtUtil.createJwtAccessToken(oidcDecodePayload.email(), oidcDecodePayload.sub()),
+                jwtUtil.createJwtRefreshToken(oidcDecodePayload.email(), oidcDecodePayload.sub()));
     }
 
     private User createNewKakaoUser(final OidcDecodePayload oidcDecodePayload) {
 
         final User newUser = User.createSocialUser(oidcDecodePayload.sub(), oidcDecodePayload.nickname(), oidcDecodePayload.picture(), oidcDecodePayload.email());
         return userRepository.save(newUser);
+    }
+
+    @Transactional
+    public LoginResponse reissueToken(String refreshToken) {
+
+        return jwtUtil.reissueToken(refreshToken);
+    }
+
+    @Transactional
+    public void logout(String refreshToken, String name) {
+
+        jwtUtil.deleteToken(refreshToken);
+        if (userRepository.findByName(name).isPresent()) userRepository.deleteByName(name);
     }
 }
