@@ -43,4 +43,11 @@ public class LoginUseCase {
 
         return jwtUtil.reissueToken(refreshToken);
     }
+
+    @Transactional
+    public void logout(String refreshToken, String name) {
+
+        jwtUtil.deleteToken(refreshToken);
+        if (userRepository.findByName(name).isPresent()) userRepository.deleteByName(name);
+    }
 }

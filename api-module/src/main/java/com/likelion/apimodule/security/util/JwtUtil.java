@@ -115,6 +115,13 @@ public class JwtUtil {
         }
     }
 
+    public void deleteToken(String refreshToken) {
+
+        // 삭제 로직
+        String email = getEmail(refreshToken);
+        redisUtil.delete(email + "_refresh_token");
+    }
+
     public void validateRefreshToken(String refreshToken) {
         // refreshToken 유효성 검증
         String email = getEmail(refreshToken);

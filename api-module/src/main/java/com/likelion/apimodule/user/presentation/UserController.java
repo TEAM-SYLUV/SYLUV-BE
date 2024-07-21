@@ -50,8 +50,26 @@ public class UserController {
             }
     )
     @Operation(summary = "토큰 재발급  API", description = "토큰 재발급 API입니다.")
-    public ApplicationResponse<String> reissue(@RequestHeader(AuthConsts.REFRESH_TOKEN_HEADER) String refreshToken) {
+    public ApplicationResponse<LoginResponse> reissue(@RequestHeader(AuthConsts.REFRESH_TOKEN_HEADER) String refreshToken) {
         LoginResponse response = loginUseCase.reissueToken(refreshToken);
-        return ApplicationResponse.ok("미완");
+        return ApplicationResponse.ok(response);
+    }
+
+    @DeleteMapping("/logout")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "로그아웃 성공",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "로그아웃 API", description = "로그아웃 API입니다.")
+    public ApplicationResponse<String> logout(@RequestHeader(AuthConsts.REFRESH_TOKEN_HEADER) String refreshToken,
+                                              @RequestParam String name) {
+
+        loginUseCase.logout(refreshToken, name);
+        return ApplicationResponse.ok("로그아웃 되었습니다.");
     }
 }
