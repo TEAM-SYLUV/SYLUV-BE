@@ -9,5 +9,6 @@ public record StoreInfo(Long storeId,
                         String openHours,
                         String closeHours,
                         String contact,
+                        String storeImage,
                         List<MenuDetailDTO> menuDetails) {
 }

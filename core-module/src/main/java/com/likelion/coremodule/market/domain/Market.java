@@ -20,4 +20,5 @@ public class Market {
     private String startHour;
     private String closeHour;
     private String contact;
+    private String imageUrl;
 }

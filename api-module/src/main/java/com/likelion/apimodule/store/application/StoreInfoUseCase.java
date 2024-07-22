@@ -43,7 +43,8 @@ public class StoreInfoUseCase {
                     .map(menu -> new MenuDetailDTO(menu.getId(),
                             menu.getName(),
                             menu.getPrice(),
-                            menu.getContent()))
+                            menu.getContent(),
+                            menu.getImageUrl()))
                     .toList();
 
             StoreInfo storeInfo = new StoreInfo(
@@ -54,6 +55,7 @@ public class StoreInfoUseCase {
                     store.getOpenHours(),
                     store.getCloseHours(),
                     store.getContact(),
+                    store.getImageUrl(),
                     menuDetails
             );
             storeInfoList.add(storeInfo);
@@ -88,7 +90,7 @@ public class StoreInfoUseCase {
                 .toList();
 
         for (Store store : list) {
-            StoreResponse ex = new StoreResponse(store.getName(), finalStoreCategory, store.getLocation(), store.getOpenHours());
+            StoreResponse ex = new StoreResponse(store.getName(), finalStoreCategory, store.getLocation(), store.getOpenHours(), store.getImageUrl());
             response.add(ex);
         }
 

@@ -27,6 +27,7 @@ public class Store {
     private String openHours;
     private String closeHours;
     private String contact;
+    private String imageUrl;
 
     @JsonValue
     public String getCategoryValue() {

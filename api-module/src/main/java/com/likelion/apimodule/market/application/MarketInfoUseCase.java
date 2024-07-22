@@ -34,7 +34,8 @@ public class MarketInfoUseCase {
                 market.getDescription(),
                 market.getStartHour(),
                 market.getCloseHour(),
-                market.getContact());
+                market.getContact(),
+                market.getImageUrl());
     }
 
     public void saveVisitList(Long storeId, String accessToken) {
