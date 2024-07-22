@@ -29,7 +29,8 @@ public class LoginUseCase {
         final User user = userRepository.findBySubId(oidcDecodePayload.sub())
                 .orElseGet(() -> createNewKakaoUser(oidcDecodePayload));
 
-        return new LoginAddResponse(user.getName(), jwtUtil.createJwtAccessToken(oidcDecodePayload.email(), oidcDecodePayload.sub()),
+        return new LoginAddResponse(user.getName(), user.getPicture(),
+                jwtUtil.createJwtAccessToken(oidcDecodePayload.email(), oidcDecodePayload.sub()),
                 jwtUtil.createJwtRefreshToken(oidcDecodePayload.email(), oidcDecodePayload.sub()));
     }
 
