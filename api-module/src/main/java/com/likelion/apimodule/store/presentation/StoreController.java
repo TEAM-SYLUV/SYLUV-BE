@@ -54,7 +54,7 @@ public class StoreController {
     )
     @Operation(summary = "장바구니 추가 API", description = "장바구니 추가 API 입니다.")
     public ApplicationResponse<String> addToCart(@PathVariable Long menuId,
-                                                 @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken {
+                                                 @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken) {
 
         storeInfoUseCase.addToCart(menuId, accessToken);
         return ApplicationResponse.ok("장바구니 추가 완료");
