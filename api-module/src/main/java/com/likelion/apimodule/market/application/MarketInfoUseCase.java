@@ -2,6 +2,7 @@ package com.likelion.apimodule.market.application;
 
 import com.likelion.apimodule.market.dto.MarketInfo;
 import com.likelion.apimodule.market.dto.VisitListInfo;
+import com.likelion.apimodule.security.util.JwtUtil;
 import com.likelion.coremodule.VisitList.domain.VisitList;
 import com.likelion.coremodule.VisitList.service.VisitListQueryService;
 import com.likelion.coremodule.market.domain.Market;
@@ -21,21 +22,26 @@ public class MarketInfoUseCase {
     private final MarketQueryService marketQueryService;
     private final VisitListQueryService visitListQueryService;
     private final StoreQueryService storeQueryService;
+    private final JwtUtil jwtUtil;
 
     public MarketInfo findMarketInfo() {
 
         Market market = marketQueryService.findMarket(1L);
 
-        return new MarketInfo(market.getName(),
+        return new MarketInfo(
+                market.getId(),
+                market.getName(),
                 market.getDescription(),
                 market.getStartHour(),
                 market.getCloseHour(),
-                market.getContact());
+                market.getContact(),
+                market.getImageUrl());
     }
 
-    public void saveVisitList(Long storeId) {
+    public void saveVisitList(Long storeId, String accessToken) {
 
-        marketQueryService.saveVisitList(storeId);
+        String email = jwtUtil.getEmail(accessToken);
+        marketQueryService.saveVisitList(storeId, email);
     }
 
     public List<VisitListInfo> findVisitList() {

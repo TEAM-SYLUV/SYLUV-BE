@@ -4,6 +4,7 @@ import com.likelion.apimodule.user.application.LoginUseCase;
 import com.likelion.apimodule.user.dto.KakaoLoginRequest;
 import com.likelion.commonmodule.exception.common.ApplicationResponse;
 import com.likelion.commonmodule.security.util.AuthConsts;
+import com.likelion.coremodule.user.dto.LoginAddResponse;
 import com.likelion.coremodule.user.dto.LoginResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,8 +35,8 @@ public class UserController {
             }
     )
     @Operation(summary = "카카오 로그인 API", description = "카카오 로그인 API입니다.")
-    public ApplicationResponse<LoginResponse> kakaoLogin(@Valid @RequestBody KakaoLoginRequest kakaoLoginRequest) {
-        LoginResponse response = loginUseCase.kakaoLogin(kakaoLoginRequest);
+    public ApplicationResponse<LoginAddResponse> kakaoLogin(@Valid @RequestBody KakaoLoginRequest kakaoLoginRequest) {
+        LoginAddResponse response = loginUseCase.kakaoLogin(kakaoLoginRequest);
         return ApplicationResponse.ok(response);
     }
 
@@ -67,9 +68,9 @@ public class UserController {
     )
     @Operation(summary = "로그아웃 API", description = "로그아웃 API입니다.")
     public ApplicationResponse<String> logout(@RequestHeader(AuthConsts.REFRESH_TOKEN_HEADER) String refreshToken,
-                                              @RequestParam String name) {
+                                              @RequestParam String nickname) {
 
-        loginUseCase.logout(refreshToken, name);
+        loginUseCase.logout(refreshToken, nickname);
         return ApplicationResponse.ok("로그아웃 되었습니다.");
     }
 }

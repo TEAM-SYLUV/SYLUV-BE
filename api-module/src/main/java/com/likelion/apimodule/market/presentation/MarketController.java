@@ -4,8 +4,9 @@ import com.likelion.apimodule.market.application.MarketInfoUseCase;
 import com.likelion.apimodule.market.dto.MarketInfo;
 import com.likelion.apimodule.market.dto.VisitListInfo;
 import com.likelion.apimodule.store.application.StoreInfoUseCase;
+import com.likelion.apimodule.store.dto.StoreResponse;
 import com.likelion.commonmodule.exception.common.ApplicationResponse;
-import com.likelion.coremodule.store.domain.Store;
+import com.likelion.commonmodule.security.util.AuthConsts;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -26,6 +27,7 @@ public class MarketController {
     private final MarketInfoUseCase marketInfoUseCase;
     private final StoreInfoUseCase storeInfoUseCase;
 
+    // 시장 정보
     @GetMapping("/info")
     @ApiResponses(
             value = {
@@ -36,7 +38,7 @@ public class MarketController {
                     )
             }
     )
-    @Operation(summary = "시장 정보 확인 API", description = "시장 정보 확인 API입니다.")
+    @Operation(summary = "시장 정보 확인 API", description = "시장 정보 확인 API 입니다.")
     public ApplicationResponse<MarketInfo> getMarketInfo() {
 
         MarketInfo infos = marketInfoUseCase.findMarketInfo();
@@ -54,10 +56,11 @@ public class MarketController {
                     )
             }
     )
-    @Operation(summary = "가게 검색 API", description = "가게 검색 API입니다.")
-    public ApplicationResponse<List<Store>> findStoreByFilter(@RequestParam String search, @RequestParam String category) {
+    @Operation(summary = "가게 검색 API", description = "가게 검색 API 입니다.")
+    public ApplicationResponse<List<StoreResponse>> findStoreByFilter(@RequestParam(required = false) String search,
+                                                                      @RequestParam(required = false) String category) {
 
-        final List<Store> storeByFilter = storeInfoUseCase.findStoreByFilter(search, category);
+        final List<StoreResponse> storeByFilter = storeInfoUseCase.findStoreByFilter(search, category);
         return ApplicationResponse.ok(storeByFilter);
     }
 
@@ -72,10 +75,11 @@ public class MarketController {
                     )
             }
     )
-    @Operation(summary = "방문 리스트 추가 API", description = "방문 리스트 추가 API입니다.")
-    public ApplicationResponse<String> saveVisitList(@PathVariable Long storeId) {
+    @Operation(summary = "방문 리스트 추가 API", description = "방문 리스트 추가 API 입니다.")
+    public ApplicationResponse<String> saveVisitList(@PathVariable Long storeId,
+                                                     @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken) {
 
-        marketInfoUseCase.saveVisitList(storeId);
+        marketInfoUseCase.saveVisitList(storeId, accessToken);
         return ApplicationResponse.ok("방문 리스트 추가 완료");
     }
 
@@ -90,7 +94,7 @@ public class MarketController {
                     )
             }
     )
-    @Operation(summary = "방문 리스트 조회 API", description = "방문 리스트 조회 API입니다.")
+    @Operation(summary = "방문 리스트 조회 API", description = "방문 리스트 조회 API 입니다.")
     public ApplicationResponse<List<VisitListInfo>> findVisitList() {
 
         final List<VisitListInfo> visitList = marketInfoUseCase.findVisitList();

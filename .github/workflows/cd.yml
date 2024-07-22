@@ -2,7 +2,7 @@ name: Backend CD # actions 이름
 
 on:
   push:
-    branches: [ feat/login-update ]
+    branches: [ feat/review-api ]
 
 jobs:
   deploy:
@@ -16,6 +16,13 @@ jobs:
 
       - name: 저장소 Checkout
         uses: actions/checkout@v3
+
+      - name: make application-s3 yml file
+        run: |
+          cd ./common-module/src/main/resources
+          touch ./application-s3.yml
+          echo "${{ secrets.APPLICATION_S3 }}" > ./application-s3.yml
+        shell: bash
 
       - name: Gradlew 권한 부여
         run: chmod +x ./gradlew

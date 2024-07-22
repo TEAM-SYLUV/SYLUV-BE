@@ -6,11 +6,11 @@ import lombok.*;
 
 @Builder
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
 public class Store {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "store_id")
@@ -25,7 +25,9 @@ public class Store {
     private StoreCategory category;
     private String location;
     private String openHours;
+    private String closeHours;
     private String contact;
+    private String imageUrl;
 
     @JsonValue
     public String getCategoryValue() {
