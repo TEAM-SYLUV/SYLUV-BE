@@ -31,7 +31,6 @@ public class AwsS3Service {
      * file upload
      */
     public String uploadFile(MultipartFile multipartFile) {
-
         if (Objects.isNull(multipartFile)) return null;
         if (multipartFile.isEmpty()) return null;
 
@@ -41,14 +40,14 @@ public class AwsS3Service {
         objectMetadata.setContentType(multipartFile.getContentType());
 
         try (InputStream inputStream = multipartFile.getInputStream()) {
-            amazonS3.putObject(new PutObjectRequest(bucketName, fileName, inputStream, objectMetadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
+            amazonS3.putObject(new PutObjectRequest(bucketName, fileName, inputStream, objectMetadata));
         } catch (IOException e) {
             throw new FileUploadException(ImageErrorCode.FILE_UPLOAD_FAIL);
         }
 
         return amazonS3.getUrl(bucketName, fileName).toString();
     }
+
 
     /**
      * 파일 삭제 메서드
