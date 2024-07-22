@@ -45,7 +45,7 @@ public class ReviewController {
         return ApplicationResponse.ok(infos);
     }
 
-    // 리뷰 남기기
+    // 리뷰 저장
     @PostMapping
     @ApiResponses(
             value = {
