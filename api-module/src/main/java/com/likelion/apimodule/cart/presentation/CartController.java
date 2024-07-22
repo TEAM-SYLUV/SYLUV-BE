@@ -65,4 +65,22 @@ public class CartController {
     }
 
     // 장바구니 삭제
+    @DeleteMapping("{cartId}/delete")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "나의 장바구니 삭제 성공",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "나의 장바구니 삭제 API", description = "나의 장바구니 삭제 API 입니다.")
+    public ApplicationResponse<String> deleteMyCart(@RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken,
+                                                    @PathVariable Long cartId) {
+
+        cartSaveUseCase.deleteMyCart(accessToken, cartId);
+        return ApplicationResponse.ok("장바구니 삭제 완료");
+    }
+
 }

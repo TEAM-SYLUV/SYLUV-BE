@@ -9,11 +9,12 @@ import com.likelion.coremodule.menu.service.MenuQueryService;
 import com.likelion.coremodule.user.application.UserQueryService;
 import com.likelion.coremodule.user.domain.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CartSaveUseCase {
 
     private final CartQueryService cartQueryService;
@@ -30,5 +31,13 @@ public class CartSaveUseCase {
 
         final Cart cart = Cart.builder().user(user).menu(menu).quantity(saveReq.quantity()).build();
         cartQueryService.saveCart(cart);
+    }
+
+    public void deleteMyCart(String accessToken, Long cartId) {
+
+        String email = jwtUtil.getEmail(accessToken);
+        User user = userQueryService.findByEmail(email);
+
+        cartQueryService.deleteCartByUserIdAndCartId(user.getUserId(), cartId);
     }
 }

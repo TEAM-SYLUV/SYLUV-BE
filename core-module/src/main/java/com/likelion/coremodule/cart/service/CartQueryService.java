@@ -20,4 +20,9 @@ public class CartQueryService {
     public List<Cart> findCartsByUserId(Long userId) {
         return cartRepository.findCartsByUserUserId(userId);
     }
+
+    public void deleteCartByUserIdAndCartId(Long userId, Long cartId) {
+
+        cartRepository.deleteCartByIdAndUserUserId(cartId, userId);
+    }
 }
