@@ -1,6 +1,6 @@
 package com.likelion.coremodule.cart.domain;
 
-import com.likelion.coremodule.store.domain.Store;
+import com.likelion.coremodule.menu.domain.Menu;
 import com.likelion.coremodule.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,10 +14,16 @@ import lombok.*;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cart_id")
+    @Column(name = "item_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
+
+
 }
