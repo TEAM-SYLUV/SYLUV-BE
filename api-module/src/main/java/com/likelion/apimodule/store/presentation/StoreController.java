@@ -60,7 +60,4 @@ public class StoreController {
         return ApplicationResponse.ok("장바구니 추가 완료");
     }
 
-    // 리뷰 조회
-
-    // 리뷰 작성
 }

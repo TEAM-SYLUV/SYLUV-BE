@@ -1,6 +1,8 @@
 package com.likelion.coremodule.VisitList.service;
 
 import com.likelion.coremodule.VisitList.domain.VisitList;
+import com.likelion.coremodule.VisitList.exception.VisitErrorCode;
+import com.likelion.coremodule.VisitList.exception.VisitException;
 import com.likelion.coremodule.VisitList.repository.VisitListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +16,10 @@ public class VisitListQueryService {
     private final VisitListRepository visitListRepository;
 
     public List<VisitList> findAllVisitList() {
-
         return visitListRepository.findAll();
+    }
+
+    public VisitList findVisitListById(Long id) {
+        return visitListRepository.findById(id).orElseThrow(() -> new VisitException(VisitErrorCode.NO_VISIT_LIST_INFO));
     }
 }
