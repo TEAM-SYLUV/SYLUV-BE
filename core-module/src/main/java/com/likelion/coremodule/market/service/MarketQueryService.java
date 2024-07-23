@@ -2,6 +2,8 @@ package com.likelion.coremodule.market.service;
 
 import com.likelion.coremodule.VisitList.domain.VisitList;
 import com.likelion.coremodule.VisitList.domain.VisitStatus;
+import com.likelion.coremodule.VisitList.exception.VisitErrorCode;
+import com.likelion.coremodule.VisitList.exception.VisitException;
 import com.likelion.coremodule.VisitList.repository.VisitListRepository;
 import com.likelion.coremodule.market.domain.Market;
 import com.likelion.coremodule.market.exception.MarketErrorCode;
@@ -32,12 +34,21 @@ public class MarketQueryService {
         User user = userQueryService.findByEmail(email);
         Store store = storeQueryService.findStoreById(storeId);
 
-        final VisitList visitList = VisitList.builder()
-                .store(store)
-                .user(user)
-                .visit_status(VisitStatus.BEFORE)
-                .build();
-        visitListRepository.save(visitList);
+        if (visitListRepository.findVisitListByUserUserIdAndStoreId(user.getUserId(), storeId) != null) {
+            throw new VisitException(VisitErrorCode.EXIST_VISIT_LIST_INFO);
+        } else {
+
+            final VisitList visitList = VisitList.builder()
+                    .store(store)
+                    .user(user)
+                    .visit_status(VisitStatus.BEFORE)
+                    .build();
+            visitListRepository.save(visitList);
+        }
+    }
+
+    public void deleteVisitList(Long id) {
+        visitListRepository.deleteById(id);
     }
 
 }
