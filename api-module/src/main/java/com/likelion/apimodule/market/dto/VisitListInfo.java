@@ -2,6 +2,8 @@ package com.likelion.apimodule.market.dto;
 
 import com.likelion.coremodule.VisitList.domain.VisitStatus;
 
-public record VisitListInfo(String store,
+public record VisitListInfo(Long visitListId,
+                            Long storeId,
+                            String store,
                             VisitStatus status) {
 }

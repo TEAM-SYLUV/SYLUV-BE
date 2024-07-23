@@ -1,4 +1,5 @@
 package com.likelion.coremodule.store.domain;
+
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.likelion.coremodule.market.domain.Market;
 import jakarta.persistence.*;
@@ -21,8 +22,8 @@ public class Store {
     private Market market;
 
     private String name;
-    private Integer reviewCount;
     private StoreCategory category;
+    private String description;
     private String location;
     private String openHours;
     private String closeHours;

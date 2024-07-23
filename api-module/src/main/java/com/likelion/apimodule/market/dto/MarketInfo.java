@@ -5,6 +5,7 @@ public record MarketInfo(Long marketId,
                          String description,
                          String startHour,
                          String closeHour,
+                         String location,
                          String contact,
                          String image) {
 }
