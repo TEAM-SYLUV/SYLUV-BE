@@ -54,6 +54,7 @@ public class StoreInfoUseCase {
                     store.getLocation(),
                     store.getOpenHours(),
                     store.getCloseHours(),
+                    store.getCategory(),
                     store.getContact(),
                     store.getImageUrl(),
                     menuDetails
@@ -90,7 +91,7 @@ public class StoreInfoUseCase {
                 .toList();
 
         for (Store store : list) {
-            StoreResponse ex = new StoreResponse(store.getName(), finalStoreCategory, store.getLocation(), store.getOpenHours(), store.getImageUrl());
+            StoreResponse ex = new StoreResponse(store.getId(), store.getName(), finalStoreCategory, store.getDescription(), store.getLocation(), store.getOpenHours(), store.getImageUrl());
             response.add(ex);
         }
 

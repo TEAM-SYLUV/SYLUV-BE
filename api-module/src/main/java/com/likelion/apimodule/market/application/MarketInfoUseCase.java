@@ -53,11 +53,17 @@ public class MarketInfoUseCase {
             Long id = i.getId();
             Store store = storeQueryService.findStoreById(id);
 
-            VisitListInfo visitListInfo = new VisitListInfo(store.getName(), i.getVisit_status());
+            VisitListInfo visitListInfo = new VisitListInfo(id, store.getId(), store.getName(), i.getVisit_status());
             visitListInfos.add(visitListInfo);
         }
 
         return visitListInfos;
+    }
+
+    public void deleteVisitList(Long visitListId) {
+
+        if (visitListQueryService.findVisitListById(visitListId) == null)
+            marketQueryService.deleteVisitList(visitListId);
     }
 
 }

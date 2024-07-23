@@ -100,4 +100,23 @@ public class MarketController {
         final List<VisitListInfo> visitList = marketInfoUseCase.findVisitList();
         return ApplicationResponse.ok(visitList);
     }
+
+    // 방문 리스트 삭제
+    @DeleteMapping("/{visitListId}/visitlist/delete")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "방문 리스트 삭제 성공",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "방문 리스트 삭제 API", description = "방문 리스트 삭제 API 입니다.")
+    public ApplicationResponse<String> deleteVisitList(
+            @PathVariable Long visitListId) {
+
+        marketInfoUseCase.deleteVisitList(visitListId);
+        return ApplicationResponse.ok("방문 리스트 삭제 성공");
+    }
 }
