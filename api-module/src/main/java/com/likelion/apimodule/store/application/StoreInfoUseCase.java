@@ -40,7 +40,8 @@ public class StoreInfoUseCase {
 
             List<Menu> menus = menuQueryService.findMenusByStoreId(store.getId());
             List<MenuDetailDTO> menuDetails = menus.stream()
-                    .map(menu -> new MenuDetailDTO(menu.getId(),
+                    .map(menu -> new MenuDetailDTO(
+                            menu.getId(),
                             menu.getName(),
                             menu.getPrice(),
                             menu.getContent(),

@@ -34,6 +34,7 @@ public class MarketInfoUseCase {
                 market.getDescription(),
                 market.getStartHour(),
                 market.getCloseHour(),
+                market.getLocation(),
                 market.getContact(),
                 market.getImageUrl());
     }
