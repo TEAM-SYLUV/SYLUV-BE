@@ -7,6 +7,7 @@ import java.util.List;
 public record StoreInfo(Long storeId,
                         String name,
                         Integer reviewCount,
+                        Double ratingAvg,
                         String location,
                         String openHours,
                         String closeHours,

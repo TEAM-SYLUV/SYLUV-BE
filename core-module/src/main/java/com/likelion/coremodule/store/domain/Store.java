@@ -22,7 +22,6 @@ public class Store {
     private Market market;
 
     private String name;
-    private Integer reviewCount;
     private StoreCategory category;
     private String description;
     private String location;

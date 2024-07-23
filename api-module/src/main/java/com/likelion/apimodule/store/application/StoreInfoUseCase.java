@@ -8,6 +8,8 @@ import com.likelion.coremodule.cart.domain.Cart;
 import com.likelion.coremodule.cart.service.CartQueryService;
 import com.likelion.coremodule.menu.domain.Menu;
 import com.likelion.coremodule.menu.service.MenuQueryService;
+import com.likelion.coremodule.review.domain.Review;
+import com.likelion.coremodule.review.service.ReviewQueryService;
 import com.likelion.coremodule.store.domain.Store;
 import com.likelion.coremodule.store.domain.StoreCategory;
 import com.likelion.coremodule.store.exception.StoreErrorCode;
@@ -29,6 +31,7 @@ public class StoreInfoUseCase {
     private final MenuQueryService menuQueryService;
     private final UserQueryService userQueryService;
     private final CartQueryService cartQueryService;
+    private final ReviewQueryService reviewQueryService;
     private final JwtUtil jwtUtil;
 
     public List<StoreInfo> findStoreInfo() {
@@ -48,22 +51,41 @@ public class StoreInfoUseCase {
                             menu.getImageUrl()))
                     .toList();
 
-            StoreInfo storeInfo = new StoreInfo(
-                    store.getId(),
-                    store.getName(),
-                    store.getReviewCount(),
-                    store.getLocation(),
-                    store.getOpenHours(),
-                    store.getCloseHours(),
-                    store.getCategory(),
-                    store.getContact(),
-                    store.getImageUrl(),
-                    menuDetails
-            );
-            storeInfoList.add(storeInfo);
+            for (Menu menu : menus) {
+
+                // 리뷰 관련 cnt, avg
+                List<Review> reviews = reviewQueryService.findReviewsByStoreId(menu.getId());
+                final StoreInfo storeInfo = getStoreInfo(store, reviews, menuDetails);
+                storeInfoList.add(storeInfo);
+            }
         }
 
         return storeInfoList;
+    }
+
+    private static StoreInfo getStoreInfo(Store store, List<Review> reviews, List<MenuDetailDTO> menuDetails) {
+        int totalReviews = reviews.size();
+        double totalRating = 0.0;
+        for (Review review : reviews) {
+            totalRating += review.getRating();
+        }
+
+        double averageRating = totalReviews > 0 ? totalRating / totalReviews : 0.0;
+
+        StoreInfo storeInfo = new StoreInfo(
+                store.getId(),
+                store.getName(),
+                totalReviews,
+                averageRating,
+                store.getLocation(),
+                store.getOpenHours(),
+                store.getCloseHours(),
+                store.getCategory(),
+                store.getContact(),
+                store.getImageUrl(),
+                menuDetails
+        );
+        return storeInfo;
     }
 
     public List<StoreResponse> findStoreByFilter(String search, String category) {
