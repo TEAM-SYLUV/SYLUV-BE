@@ -4,6 +4,7 @@ import com.likelion.apimodule.cart.application.CartFindUseCase;
 import com.likelion.apimodule.cart.application.CartSaveUseCase;
 import com.likelion.apimodule.cart.dto.CartInfo;
 import com.likelion.apimodule.cart.dto.CartSaveReq;
+import com.likelion.apimodule.cart.dto.CartUpdateReq;
 import com.likelion.commonmodule.exception.common.ApplicationResponse;
 import com.likelion.commonmodule.security.util.AuthConsts;
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,6 +63,25 @@ public class CartController {
 
         cartSaveUseCase.saveMyCart(accessToken, saveReq);
         return ApplicationResponse.ok("장바구니 저장 완료");
+    }
+
+    // 장바구니 추가
+    @PutMapping
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "나의 장바구니 추가 성공",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "나의 장바구니 추가 API", description = "나의 장바구니 추가 API 입니다.")
+    public ApplicationResponse<String> updateMyCart(@RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken,
+                                                    @RequestBody List<CartUpdateReq> updateReqs) {
+
+        cartSaveUseCase.updateMyCart(accessToken, updateReqs);
+        return ApplicationResponse.ok("장바구니 수량 수정 완료");
     }
 
     // 장바구니 삭제

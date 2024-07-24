@@ -40,6 +40,7 @@ public class CartFindUseCase {
             Store store = storeQueryService.findStoreById(menu.getStore().getId());
 
             CartInfo cartInfo = new CartInfo(
+                    cart.getId(),
                     store.getName(),
                     menu.getName(),
                     menu.getPrice(),
