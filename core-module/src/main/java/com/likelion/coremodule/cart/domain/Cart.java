@@ -13,7 +13,7 @@ import lombok.*;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_id")
+    @Column(name = "cart_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -25,4 +25,8 @@ public class Cart {
     private Menu menu;
 
     private Integer quantity;
+
+    public void setCartQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
 }
