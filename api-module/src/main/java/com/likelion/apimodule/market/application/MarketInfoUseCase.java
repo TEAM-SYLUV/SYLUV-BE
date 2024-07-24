@@ -24,9 +24,9 @@ public class MarketInfoUseCase {
     private final StoreQueryService storeQueryService;
     private final JwtUtil jwtUtil;
 
-    public MarketInfo findMarketInfo() {
+    public MarketInfo findMarketInfo(Long marketId) {
 
-        Market market = marketQueryService.findMarket(1L);
+        Market market = marketQueryService.findMarket(marketId);
 
         return new MarketInfo(
                 market.getId(),

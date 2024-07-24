@@ -28,7 +28,7 @@ public class MarketController {
     private final StoreInfoUseCase storeInfoUseCase;
 
     // 시장 정보
-    @GetMapping("/info")
+    @GetMapping("/{marketId}/info")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -39,9 +39,9 @@ public class MarketController {
             }
     )
     @Operation(summary = "시장 정보 확인 API", description = "시장 정보 확인 API 입니다.")
-    public ApplicationResponse<MarketInfo> getMarketInfo() {
+    public ApplicationResponse<MarketInfo> getMarketInfo(@PathVariable Long marketId) {
 
-        MarketInfo infos = marketInfoUseCase.findMarketInfo();
+        MarketInfo infos = marketInfoUseCase.findMarketInfo(marketId);
         return ApplicationResponse.ok(infos);
     }
 
