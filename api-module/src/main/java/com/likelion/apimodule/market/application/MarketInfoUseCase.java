@@ -52,7 +52,7 @@ public class MarketInfoUseCase {
 
         for (VisitList i : visitLists) {
             Long id = i.getId();
-            Store store = storeQueryService.findStoreById(id);
+            Store store = storeQueryService.findStoreById(i.getStore().getId());
 
             VisitListInfo visitListInfo = new VisitListInfo(id, store.getId(), store.getName(), i.getVisit_status());
             visitListInfos.add(visitListInfo);
