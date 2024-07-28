@@ -1,6 +1,7 @@
 package com.likelion.coremodule.store.domain;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.likelion.commonmodule.exception.common.BaseEntity;
 import com.likelion.coremodule.market.domain.Market;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
-public class Store {
+public class Store extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +30,8 @@ public class Store {
     private String closeHours;
     private String contact;
     private String imageUrl;
+    private Integer xloc;
+    private Integer yloc;
 
     @JsonValue
     public String getCategoryValue() {
