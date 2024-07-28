@@ -1,6 +1,5 @@
-package com.likelion.coremodule.cart.domain;
+package com.likelion.coremodule.market.domain;
 
-import com.likelion.coremodule.menu.domain.Menu;
 import com.likelion.coremodule.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,23 +9,24 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
-public class Cart {
+public class MarketQrVisit {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cart_id")
+    @Column(name = "marketqrvisit_id")
     private Long id;
+
+    private Integer qrVisit;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "market_id")
+    private Market market;
 
-    private Integer quantity;
-
-    public void setCartQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public void updateQrVisit() {
+        this.qrVisit += 1;
     }
 }

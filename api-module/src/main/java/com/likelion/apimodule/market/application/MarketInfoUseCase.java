@@ -24,9 +24,9 @@ public class MarketInfoUseCase {
     private final StoreQueryService storeQueryService;
     private final JwtUtil jwtUtil;
 
-    public MarketInfo findMarketInfo() {
+    public MarketInfo findMarketInfo(Long marketId) {
 
-        Market market = marketQueryService.findMarket(1L);
+        Market market = marketQueryService.findMarket(marketId);
 
         return new MarketInfo(
                 market.getId(),
@@ -52,7 +52,7 @@ public class MarketInfoUseCase {
 
         for (VisitList i : visitLists) {
             Long id = i.getId();
-            Store store = storeQueryService.findStoreById(id);
+            Store store = storeQueryService.findStoreById(i.getStore().getId());
 
             VisitListInfo visitListInfo = new VisitListInfo(id, store.getId(), store.getName(), i.getVisit_status());
             visitListInfos.add(visitListInfo);

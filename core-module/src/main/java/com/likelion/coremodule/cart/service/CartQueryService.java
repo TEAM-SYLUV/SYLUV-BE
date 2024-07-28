@@ -21,6 +21,14 @@ public class CartQueryService {
         return cartRepository.findCartsByUserUserId(userId);
     }
 
+    public int findCartByUserIdAndMenuId(Long userId, Long menuId) {
+        return cartRepository.countCartsByUserUserIdAndMenuId(userId, menuId);
+    }
+
+    public Cart findCartByUserIdAndCartId(Long userId, Long cartId) {
+        return cartRepository.findCartByUserUserIdAndId(userId, cartId);
+    }
+
     public void deleteCartByUserIdAndCartId(Long userId, Long cartId) {
 
         cartRepository.deleteCartByIdAndUserUserId(cartId, userId);

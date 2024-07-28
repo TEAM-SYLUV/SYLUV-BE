@@ -35,12 +35,10 @@ public class StoreInfoUseCase {
     private final JwtUtil jwtUtil;
 
     public List<StoreInfo> findStoreInfo() {
-
         List<Store> storeList = storeQueryService.findAllStore();
         List<StoreInfo> storeInfoList = new ArrayList<>();
 
         for (Store store : storeList) {
-
             List<Menu> menus = menuQueryService.findMenusByStoreId(store.getId());
             List<MenuDetailDTO> menuDetails = menus.stream()
                     .map(menu -> new MenuDetailDTO(
@@ -51,32 +49,24 @@ public class StoreInfoUseCase {
                             menu.getImageUrl()))
                     .toList();
 
-            for (Menu menu : menus) {
-
-                // 리뷰 관련 cnt, avg
-                List<Review> reviews = reviewQueryService.findReviewsByStoreId(menu.getId());
-                final StoreInfo storeInfo = getStoreInfo(store, reviews, menuDetails);
-                storeInfoList.add(storeInfo);
-            }
+            // 리뷰 관련 cnt, avg
+            List<Review> reviews = reviewQueryService.findReviewsByStoreId(store.getId());
+            final StoreInfo storeInfo = getStoreInfo(store, reviews, menuDetails);
+            storeInfoList.add(storeInfo);
         }
 
         return storeInfoList;
     }
 
-    private static StoreInfo getStoreInfo(Store store, List<Review> reviews, List<MenuDetailDTO> menuDetails) {
-        int totalReviews = reviews.size();
-        double totalRating = 0.0;
-        for (Review review : reviews) {
-            totalRating += review.getRating();
-        }
+    private StoreInfo getStoreInfo(Store store, List<Review> reviews, List<MenuDetailDTO> menuDetails) {
+        int reviewCount = reviews.size();
+        double ratingAvg = reviews.stream().mapToDouble(Review::getRating).average().orElse(0.0);
 
-        double averageRating = totalReviews > 0 ? totalRating / totalReviews : 0.0;
-
-        StoreInfo storeInfo = new StoreInfo(
+        return new StoreInfo(
                 store.getId(),
                 store.getName(),
-                totalReviews,
-                averageRating,
+                reviewCount,
+                ratingAvg,
                 store.getLocation(),
                 store.getOpenHours(),
                 store.getCloseHours(),
@@ -85,7 +75,6 @@ public class StoreInfoUseCase {
                 store.getImageUrl(),
                 menuDetails
         );
-        return storeInfo;
     }
 
     public List<StoreResponse> findStoreByFilter(String search, String category) {
@@ -94,6 +83,11 @@ public class StoreInfoUseCase {
         List<Store> storeList = storeQueryService.findAllStore();
 
         if ((search == null || search.isEmpty()) && (category == null || category.isEmpty())) {
+
+            for (Store store : storeList) {
+                StoreResponse ex = new StoreResponse(store.getId(), store.getName(), store.getCategory(), store.getDescription(), store.getLocation(), store.getOpenHours(), store.getImageUrl());
+                response.add(ex);
+            }
             return response;
         }
 
@@ -114,7 +108,7 @@ public class StoreInfoUseCase {
                 .toList();
 
         for (Store store : list) {
-            StoreResponse ex = new StoreResponse(store.getId(), store.getName(), finalStoreCategory, store.getDescription(), store.getLocation(), store.getOpenHours(), store.getImageUrl());
+            StoreResponse ex = new StoreResponse(store.getId(), store.getName(), store.getCategory(), store.getDescription(), store.getLocation(), store.getOpenHours(), store.getImageUrl());
             response.add(ex);
         }
 
