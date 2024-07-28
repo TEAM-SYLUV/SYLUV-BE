@@ -8,5 +8,6 @@ public record ReviewInfo(Long reviewId,
                          String image,
                          String likeCount,
                          String storeName,
-                         String menuName) {
+                         String menuName,
+                         Integer beforeHours) {
 }

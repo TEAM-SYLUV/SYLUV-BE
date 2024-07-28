@@ -10,6 +10,7 @@ import com.likelion.coremodule.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +42,12 @@ public class ReviewFindUseCase {
             String storeName = store.getName();
             String menuName = menu.getName();
 
-            ReviewInfo reviewInfo = new ReviewInfo(id, name, picture, rating, content, image, likeCount, storeName, menuName);
+            LocalDateTime reviewTime = review.getCreatedAt();
+            Integer hour = reviewTime.getHour();
+            Integer nowHour = LocalDateTime.now().getHour();
+
+            ReviewInfo reviewInfo = new ReviewInfo(id, name, picture, rating, content, image,
+                    likeCount, storeName, menuName, nowHour - hour);
             reviewInfos.add(reviewInfo);
         }
 
