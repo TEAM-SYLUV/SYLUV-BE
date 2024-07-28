@@ -77,13 +77,17 @@ public class StoreInfoUseCase {
         );
     }
 
-
     public List<StoreResponse> findStoreByFilter(String search, String category) {
 
         List<StoreResponse> response = new ArrayList<>();
         List<Store> storeList = storeQueryService.findAllStore();
 
         if ((search == null || search.isEmpty()) && (category == null || category.isEmpty())) {
+
+            for (Store store : storeList) {
+                StoreResponse ex = new StoreResponse(store.getId(), store.getName(), store.getCategory(), store.getDescription(), store.getLocation(), store.getOpenHours(), store.getImageUrl());
+                response.add(ex);
+            }
             return response;
         }
 
@@ -104,7 +108,7 @@ public class StoreInfoUseCase {
                 .toList();
 
         for (Store store : list) {
-            StoreResponse ex = new StoreResponse(store.getId(), store.getName(), finalStoreCategory, store.getDescription(), store.getLocation(), store.getOpenHours(), store.getImageUrl());
+            StoreResponse ex = new StoreResponse(store.getId(), store.getName(), store.getCategory(), store.getDescription(), store.getLocation(), store.getOpenHours(), store.getImageUrl());
             response.add(ex);
         }
 
