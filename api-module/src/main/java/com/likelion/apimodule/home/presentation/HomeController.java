@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/home")
@@ -51,18 +53,22 @@ public class HomeController {
     }
 
     // 시장 리스트 검색
-//    @GetMapping
-//    @ApiResponses(
-//            value = {
-//                    @ApiResponse(
-//                            responseCode = "200",
-//                            description = "시장 리스트 검색 성공",
-//                            useReturnTypeSchema = true
-//                    )
-//            }
-//    )
-//    @Operation(summary = "시장 리스트 검색 API", description = "시장 리스트 검색 API 입니다.")
-//    public ApplicationResponse
+    @GetMapping("/search")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "시장 리스트 전체 검색 성공",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "시장 리스트 검색 API", description = "시장 리스트 검색 API 입니다.")
+    public ApplicationResponse<List<String>> findALlMarkets() {
+
+        List<String> names = homeFindUseCase.findAllMarkets();
+        return ApplicationResponse.ok(names);
+    }
 
     // 가까운 시장 확인
     @GetMapping("/nearmarket")

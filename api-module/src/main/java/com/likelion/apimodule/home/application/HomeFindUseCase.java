@@ -30,6 +30,11 @@ public class HomeFindUseCase {
     private final JwtUtil jwtUtil;
     private final UserQueryService userQueryService;
 
+    public List<String> findAllMarkets() {
+
+        return (List<String>) marketQueryService.findAllMarkets().stream().map(market -> market.getName());
+    }
+
     public HomeInfo findMarketLists(String accessToken) {
 
         String email = jwtUtil.getEmail(accessToken);
