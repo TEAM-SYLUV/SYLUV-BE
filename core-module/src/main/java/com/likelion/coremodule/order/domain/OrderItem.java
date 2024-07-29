@@ -1,4 +1,4 @@
-package com.likelion.coremodule.orderItem.domain;
+package com.likelion.coremodule.order.domain;
 
 import com.likelion.commonmodule.exception.common.BaseEntity;
 import com.likelion.coremodule.menu.domain.Menu;
