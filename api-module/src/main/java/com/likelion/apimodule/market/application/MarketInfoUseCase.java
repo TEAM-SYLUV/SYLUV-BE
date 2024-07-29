@@ -4,6 +4,8 @@ import com.likelion.apimodule.market.dto.MarketInfo;
 import com.likelion.apimodule.market.dto.VisitListInfo;
 import com.likelion.apimodule.security.util.JwtUtil;
 import com.likelion.coremodule.VisitList.domain.VisitList;
+import com.likelion.coremodule.VisitList.exception.VisitErrorCode;
+import com.likelion.coremodule.VisitList.exception.VisitException;
 import com.likelion.coremodule.VisitList.service.VisitListQueryService;
 import com.likelion.coremodule.market.domain.Market;
 import com.likelion.coremodule.market.service.MarketQueryService;
@@ -63,8 +65,11 @@ public class MarketInfoUseCase {
 
     public void deleteVisitList(Long visitListId) {
 
-        if (visitListQueryService.findVisitListById(visitListId) == null)
+        if (visitListQueryService.findVisitListById(visitListId) != null) {
             marketQueryService.deleteVisitList(visitListId);
+        } else {
+            throw new VisitException(VisitErrorCode.NO_VISIT_LIST_INFO);
+        }
     }
 
 }
