@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +36,7 @@ public class StoreInfoUseCase {
     private final JwtUtil jwtUtil;
 
     public List<StoreInfo> findStoreInfo() {
+
         List<Store> storeList = storeQueryService.findAllStore();
         List<StoreInfo> storeInfoList = new ArrayList<>();
 
@@ -56,6 +58,24 @@ public class StoreInfoUseCase {
         }
 
         return storeInfoList;
+    }
+
+    public StoreInfo findStoreInfoByMenuId(Long menuId) {
+        Menu menu = menuQueryService.findMenuById(menuId);
+        Store store = menu.getStore();
+
+        List<Menu> menus = menuQueryService.findMenusByStoreId(store.getId());
+        List<MenuDetailDTO> menuDetails = menus.stream()
+                .map(m -> new MenuDetailDTO(
+                        m.getId(),
+                        m.getName(),
+                        m.getPrice(),
+                        m.getContent(),
+                        m.getImageUrl()))
+                .collect(Collectors.toList());
+
+        List<Review> reviews = reviewQueryService.findReviewsByStoreId(store.getId());
+        return getStoreInfo(store, reviews, menuDetails);
     }
 
     private StoreInfo getStoreInfo(Store store, List<Review> reviews, List<MenuDetailDTO> menuDetails) {

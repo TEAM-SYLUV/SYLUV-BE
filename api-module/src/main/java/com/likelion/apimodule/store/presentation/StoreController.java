@@ -41,6 +41,23 @@ public class StoreController {
         return ApplicationResponse.ok(infos);
     }
 
+    @GetMapping("/{menuId}/info")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "가게 메뉴 정보 확인 성공",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "가게 메뉴 정보 확인 API", description = "가게 메뉴 정보 확인 API 입니다.")
+    public ApplicationResponse<StoreInfo> getStoreInfoByMenuId(@PathVariable Long menuId) {
+
+        StoreInfo info = storeInfoUseCase.findStoreInfoByMenuId(menuId);
+        return ApplicationResponse.ok(info);
+    }
+
     // 장바구니 추가
     @PostMapping("/{menuId}/addcart")
     @ApiResponses(
