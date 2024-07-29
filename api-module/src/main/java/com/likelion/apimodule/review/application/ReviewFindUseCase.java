@@ -10,6 +10,7 @@ import com.likelion.coremodule.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +43,15 @@ public class ReviewFindUseCase {
             String storeName = store.getName();
             String menuName = menu.getName();
 
+            LocalDateTime now = LocalDateTime.now();
             LocalDateTime reviewTime = review.getCreatedAt();
-            Integer hour = reviewTime.getHour();
-            Integer nowHour = LocalDateTime.now().getHour();
+            Integer hourDifference = (int) Duration.between(reviewTime, now).toHours();
+            Integer dayDifference = (int) Duration.between(reviewTime, now).toDays();
+            Integer weekDifference = (int) (dayDifference / 7);
+
 
             ReviewInfo reviewInfo = new ReviewInfo(id, name, picture, rating, content, image,
-                    likeCount, storeName, menuName, nowHour - hour);
+                    likeCount, storeName, menuName, hourDifference, dayDifference, weekDifference);
             reviewInfos.add(reviewInfo);
         }
 

@@ -9,5 +9,7 @@ public record ReviewInfo(Long reviewId,
                          String likeCount,
                          String storeName,
                          String menuName,
-                         Integer beforeHours) {
+                         Integer beforeHours,
+                         Integer beforeDay,
+                         Integer beforeWeek) {
 }
