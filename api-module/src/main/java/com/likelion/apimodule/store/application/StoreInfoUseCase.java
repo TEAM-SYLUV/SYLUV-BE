@@ -4,6 +4,7 @@ import com.likelion.apimodule.security.util.JwtUtil;
 import com.likelion.apimodule.store.dto.MenuDetailDTO;
 import com.likelion.apimodule.store.dto.StoreInfo;
 import com.likelion.apimodule.store.dto.StoreResponse;
+import com.likelion.apimodule.store.mapper.MenuMapper;
 import com.likelion.coremodule.cart.domain.Cart;
 import com.likelion.coremodule.cart.service.CartQueryService;
 import com.likelion.coremodule.menu.domain.Menu;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -60,22 +60,10 @@ public class StoreInfoUseCase {
         return storeInfoList;
     }
 
-    public StoreInfo findStoreInfoByMenuId(Long menuId) {
+    public MenuDetailDTO findMenuById(Long menuId) {
+
         Menu menu = menuQueryService.findMenuById(menuId);
-        Store store = menu.getStore();
-
-        List<Menu> menus = menuQueryService.findMenusByStoreId(store.getId());
-        List<MenuDetailDTO> menuDetails = menus.stream()
-                .map(m -> new MenuDetailDTO(
-                        m.getId(),
-                        m.getName(),
-                        m.getPrice(),
-                        m.getContent(),
-                        m.getImageUrl()))
-                .collect(Collectors.toList());
-
-        List<Review> reviews = reviewQueryService.findReviewsByStoreId(store.getId());
-        return getStoreInfo(store, reviews, menuDetails);
+        return MenuMapper.toInfoDTO(menu);
     }
 
     private StoreInfo getStoreInfo(Store store, List<Review> reviews, List<MenuDetailDTO> menuDetails) {
