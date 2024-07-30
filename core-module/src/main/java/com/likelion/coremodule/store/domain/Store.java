@@ -30,8 +30,8 @@ public class Store extends BaseEntity {
     private String closeHours;
     private String contact;
     private String imageUrl;
-    private Integer xloc;
-    private Integer yloc;
+    private String xloc;
+    private String yloc;
 
     @JsonValue
     public String getCategoryValue() {
