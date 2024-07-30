@@ -39,7 +39,7 @@ public class CartSaveUseCase {
         Menu menu = menuQueryService.findMenuById(saveReq.menuId());
 
         if (findMyCartCount(user.getUserId(), menu.getId()) >= 1) {
-            throw new CartException(CartErrorCode.NO_CART_INFO);
+            throw new CartException(CartErrorCode.EXISTED_CART_INFO);
         } else {
             final Cart cart = Cart.builder().user(user).menu(menu).quantity(saveReq.quantity()).build();
             cartQueryService.saveCart(cart);

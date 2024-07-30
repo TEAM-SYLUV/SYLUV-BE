@@ -43,7 +43,7 @@ public class OrderController {
             @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken
     ) {
 
-        List<CartInfo> infos = orderFindUseCase.findAllOrders(accessToken);
+        List<OrderInfo> infos = orderFindUseCase.findAllOrders(accessToken);
         return ApplicationResponse.ok(infos);
     }
 
