@@ -23,5 +23,7 @@ public class Menu {
     private String name;
     private Integer price;
     private String content;
+
+    @Column(columnDefinition = "TEXT")
     private String imageUrl;
 }

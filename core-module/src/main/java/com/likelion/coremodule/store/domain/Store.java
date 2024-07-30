@@ -29,6 +29,8 @@ public class Store extends BaseEntity {
     private String openHours;
     private String closeHours;
     private String contact;
+
+    @Column(columnDefinition = "TEXT")
     private String imageUrl;
     private String xloc;
     private String yloc;

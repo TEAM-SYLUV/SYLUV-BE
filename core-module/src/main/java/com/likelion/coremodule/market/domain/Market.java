@@ -22,6 +22,8 @@ public class Market extends BaseEntity {
     private String closeHour;
     private String location;
     private String contact;
+
+    @Column(columnDefinition = "TEXT")
     private String imageUrl;
     private Integer xloc;
     private Integer yloc;
