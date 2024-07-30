@@ -13,6 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 public class VisitList extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "visitlist_id")
@@ -27,6 +28,5 @@ public class VisitList extends BaseEntity {
     private User user;
 
     private VisitStatus visit_status;
-
 
 }

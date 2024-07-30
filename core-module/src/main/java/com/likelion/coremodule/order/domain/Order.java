@@ -4,6 +4,7 @@ import com.likelion.commonmodule.exception.common.BaseEntity;
 import com.likelion.coremodule.VisitList.domain.VisitList;
 import com.likelion.coremodule.VisitList.domain.VisitStatus;
 import com.likelion.coremodule.store.domain.Store;
+import com.likelion.coremodule.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +18,9 @@ public class Order extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "")
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "visitlist_id")

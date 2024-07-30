@@ -1,7 +1,6 @@
 package com.likelion.coremodule.order.service;
 
-import com.likelion.coremodule.cart.domain.Cart;
-import com.likelion.coremodule.cart.repository.CartRepository;
+import com.likelion.coremodule.order.domain.Order;
 import com.likelion.coremodule.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,5 +13,7 @@ public class OrderQueryService {
 
     private final OrderRepository orderRepository;
 
-    public
+    public List<Order> findOrderByUserId(Long userId) {
+        return orderRepository.findOrdersByVisitListUserUserId(userId);
+    }
 }
