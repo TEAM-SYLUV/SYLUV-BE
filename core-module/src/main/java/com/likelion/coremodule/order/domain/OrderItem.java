@@ -12,6 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 public class OrderItem extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "orderitem_id")

@@ -14,6 +14,6 @@ public class OrderQueryService {
     private final OrderRepository orderRepository;
 
     public List<Order> findOrderByUserId(Long userId) {
-        return orderRepository.findOrdersByVisitListUserUserId(userId);
+        return orderRepository.findOrdersByUserUserId(userId);
     }
 }
