@@ -7,6 +7,8 @@ import com.likelion.coremodule.VisitList.domain.VisitList;
 import com.likelion.coremodule.VisitList.repository.VisitListRepository;
 import com.likelion.coremodule.market.domain.Market;
 import com.likelion.coremodule.market.service.MarketQueryService;
+import com.likelion.coremodule.menu.domain.Menu;
+import com.likelion.coremodule.menu.service.MenuQueryService;
 import com.likelion.coremodule.order.domain.Order;
 import com.likelion.coremodule.order.service.OrderQueryService;
 import com.likelion.coremodule.store.domain.Store;
@@ -27,6 +29,7 @@ public class OrderFindUseCase {
     private final UserQueryService userQueryService;
     private final OrderQueryService orderQueryService;
     private final StoreQueryService storeQueryService;
+    private final MenuQueryService menuQueryService;
     private final MarketQueryService marketQueryService;
     private final VisitListRepository visitListRepository;
 
@@ -42,18 +45,19 @@ public class OrderFindUseCase {
             List<StoreOrder> storeOrderList = new ArrayList<>();
             int totalPrice = 0;
 
-            List<VisitList> visitLists = visitListRepository.findById(order.getVisitList().getId());
+            List<VisitList> visitLists = visitListRepository.findVisitListsByUserUserId(user.getUserId());
 
-            for (VisitList visit : order.getVisitList()) { // 복수형으로 변경
+            for (VisitList visit : visitLists) {
+
                 Store store = storeQueryService.findStoreById(visit.getStore().getId());
-                Market market = store.getMarket(); // Market 정보는 Store에서 가져옵니다.
+                List<Menu> menus = menuQueryService.findMenusByStoreId(store.getId());
 
-                // 각 방문마다 StoreOrder 객체를 생성합니다.
-                int storeTotalPrice = store.getMenus().stream().mapToInt(Menu::getPrice).sum();
+                int storeTotalPrice = menus.stream().mapToInt(Menu::getPrice).sum();
                 StoreOrder storeOrder = new StoreOrder(
                         store.getName(),
                         storeTotalPrice,
-                        visit.getVisit_status()
+                        visit.getVisit_status(),
+                        store
                 );
                 storeOrderList.add(storeOrder);
 
@@ -62,7 +66,9 @@ public class OrderFindUseCase {
             }
 
             if (!storeOrderList.isEmpty()) {
-                Market market = storeOrderList.get(0).getMarket(); // storeOrder에서 Market 정보를 가져오는 대신 첫 Store의 Market 정보 사용
+                Store store = storeOrderList.get(0).getStore();
+                Market market = store.getMarket();
+
                 OrderInfo orderInfo = new OrderInfo(
                         market.getName(),
                         storeOrderList,
@@ -76,5 +82,10 @@ public class OrderFindUseCase {
         return orderInfos;
     }
 
+//    public OrderInfo findMyOrderDetail(String accessToken) {
+//
+//        String email = jwtUtil.getEmail(accessToken);
+//        User user = userQueryService.findByEmail(email);
+//    }
 
 }

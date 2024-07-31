@@ -1,7 +1,5 @@
 package com.likelion.apimodule.order.presentation;
 
-import com.likelion.apimodule.cart.application.CartFindUseCase;
-import com.likelion.apimodule.cart.dto.CartInfo;
 import com.likelion.apimodule.order.application.OrderFindUseCase;
 import com.likelion.apimodule.order.dto.OrderInfo;
 import com.likelion.commonmodule.exception.common.ApplicationResponse;
@@ -25,6 +23,7 @@ import java.util.List;
 @Validated
 @Tag(name = "Order", description = "Order 관련 API")
 public class OrderController {
+
     private final OrderFindUseCase orderFindUseCase;
 
     // 주문내역 조회
@@ -46,5 +45,28 @@ public class OrderController {
         List<OrderInfo> infos = orderFindUseCase.findAllOrders(accessToken);
         return ApplicationResponse.ok(infos);
     }
+
+    // 주문 상세
+//    @GetMapping
+//    @ApiResponses(
+//            value = {
+//                    @ApiResponse(
+//                            responseCode = "200",
+//                            description = "나의 주문상세 확인 성공",
+//                            useReturnTypeSchema = true
+//                    )
+//            }
+//    )
+//    @Operation(summary = "나의 주문내역 확인 API", description = "나의 주문내역 API 입니다.")
+//    public ApplicationResponse<OrderInfo> findMyOrderDetail(
+//            @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER
+//    ) {
+//
+//                return ApplicationResponse.ok()
+//    }
+
+    // 주문하기
+
+    // 토스 결제하기
 
 }
