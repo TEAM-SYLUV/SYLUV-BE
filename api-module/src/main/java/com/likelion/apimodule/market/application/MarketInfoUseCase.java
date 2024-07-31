@@ -104,17 +104,26 @@ public class MarketInfoUseCase {
         return visitListInfosByDate;
     }
 
-    public Map<LocalDate, List<VisitListInfo>> findTodayVisitList (String accessToken) {
+    public Map<LocalDate, List<VisitListInfo>> findTodayVisitList(String accessToken) {
         String email = jwtUtil.getEmail(accessToken);
         User user = userQueryService.findByEmail(email);
 
         List<VisitList> visitLists = visitListQueryService.findVisitListsByUserId(user.getUserId());
 
-        // 그룹화된 방문 리스트를 날짜별로 나누기
-        Map<LocalDate, List<VisitList>> groupedByDate = visitLists.stream()
+        // Get today's date
+        LocalDate today = LocalDate.now();
+
+        // Filter out visit lists with today's date and visit_status not equal to VISITED
+        List<VisitList> filteredVisitLists = visitLists.stream()
+                .filter(vl -> vl.getCreatedAt().toLocalDate().isEqual(today))
+                .filter(vl -> !vl.getVisit_status().equals(VisitStatus.VISITED))
+                .toList();
+
+        // Group filtered visit lists by date
+        Map<LocalDate, List<VisitList>> groupedByDate = filteredVisitLists.stream()
                 .collect(Collectors.groupingBy(vl -> vl.getCreatedAt().toLocalDate()));
 
-        // 날짜별 VisitListInfo 리스트를 저장할 Map
+        // Map to store VisitListInfo by date
         Map<LocalDate, List<VisitListInfo>> visitListInfosByDate = new LinkedHashMap<>();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -123,12 +132,12 @@ public class MarketInfoUseCase {
             LocalDate date = entry.getKey();
             List<VisitList> visitListsForDate = entry.getValue();
 
-            // LocalDateTime을 기준으로 정렬
+            // Sort by LocalDateTime
             List<VisitList> sortedVisitListsForDate = visitListsForDate.stream()
                     .sorted(Comparator.comparing(VisitList::getCreatedAt))
                     .toList();
 
-            // 날짜별 VisitListInfo 리스트 생성
+            // Create VisitListInfo list for the date
             List<VisitListInfo> visitListInfos = sortedVisitListsForDate.stream()
                     .map(visitList -> {
                         Long id = visitList.getId();
@@ -153,6 +162,7 @@ public class MarketInfoUseCase {
 
         return visitListInfosByDate;
     }
+
 
     public void deleteVisitList(Long visitListId) {
 
