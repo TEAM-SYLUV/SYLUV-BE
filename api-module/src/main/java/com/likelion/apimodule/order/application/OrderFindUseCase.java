@@ -67,7 +67,7 @@ public class OrderFindUseCase {
 
             if (!storeOrderList.isEmpty()) {
                 Store store = storeOrderList.get(0).getStore();
-                Market market = store.getMarket();
+                Market market = marketQueryService.findMarket(store.getMarket().getId());
 
                 OrderInfo orderInfo = new OrderInfo(
                         market.getName(),
