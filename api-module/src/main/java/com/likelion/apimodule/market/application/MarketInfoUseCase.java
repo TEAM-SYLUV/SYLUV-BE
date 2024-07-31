@@ -4,6 +4,7 @@ import com.likelion.apimodule.market.dto.MarketInfo;
 import com.likelion.apimodule.market.dto.VisitListInfo;
 import com.likelion.apimodule.security.util.JwtUtil;
 import com.likelion.coremodule.VisitList.domain.VisitList;
+import com.likelion.coremodule.VisitList.domain.VisitStatus;
 import com.likelion.coremodule.VisitList.exception.VisitErrorCode;
 import com.likelion.coremodule.VisitList.exception.VisitException;
 import com.likelion.coremodule.VisitList.service.VisitListQueryService;
@@ -16,10 +17,14 @@ import com.likelion.coremodule.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,27 +57,101 @@ public class MarketInfoUseCase {
         marketQueryService.saveVisitList(storeId, email);
     }
 
-    public List<VisitListInfo> findVisitList(String accessToken) {
+    public Map<LocalDate, List<VisitListInfo>> findVisitList(String accessToken) {
 
         String email = jwtUtil.getEmail(accessToken);
         User user = userQueryService.findByEmail(email);
 
-        List<VisitListInfo> visitListInfos = new ArrayList<>();
         List<VisitList> visitLists = visitListQueryService.findVisitListsByUserId(user.getUserId());
 
-        for (VisitList i : visitLists) {
-            Long id = i.getId();
-            Store store = storeQueryService.findStoreById(i.getStore().getId());
+        Map<LocalDate, List<VisitList>> groupedByDate = visitLists.stream()
+                .collect(Collectors.groupingBy(vl -> vl.getCreatedAt().toLocalDate()));
 
-            LocalDateTime time = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-            String formattedTime = time.format(formatter);
+        Map<LocalDate, List<VisitListInfo>> visitListInfosByDate = new LinkedHashMap<>();
 
-            VisitListInfo visitListInfo = new VisitListInfo(id, store.getId(), store.getName(), store.getImageUrl(), formattedTime, i.getVisit_status());
-            visitListInfos.add(visitListInfo);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        for (Map.Entry<LocalDate, List<VisitList>> entry : groupedByDate.entrySet()) {
+            LocalDate date = entry.getKey();
+            List<VisitList> visitListsForDate = entry.getValue();
+
+            List<VisitList> sortedVisitListsForDate = visitListsForDate.stream()
+                    .sorted(Comparator.comparing(VisitList::getCreatedAt))
+                    .toList();
+
+            List<VisitListInfo> visitListInfos = sortedVisitListsForDate.stream()
+                    .map(visitList -> {
+                        Long id = visitList.getId();
+                        Store store = storeQueryService.findStoreById(visitList.getStore().getId());
+
+                        LocalDateTime time = visitList.getCreatedAt();
+                        String formattedTime = time.format(formatter);
+
+                        return new VisitListInfo(
+                                id,
+                                store.getId(),
+                                store.getName(),
+                                store.getImageUrl(),
+                                formattedTime,
+                                visitList.getVisit_status()
+                        );
+                    })
+                    .collect(Collectors.toList());
+
+            visitListInfosByDate.put(date, visitListInfos);
         }
 
-        return visitListInfos;
+        return visitListInfosByDate;
+    }
+
+    public Map<LocalDate, List<VisitListInfo>> findTodayVisitList (String accessToken) {
+        String email = jwtUtil.getEmail(accessToken);
+        User user = userQueryService.findByEmail(email);
+
+        List<VisitList> visitLists = visitListQueryService.findVisitListsByUserId(user.getUserId());
+
+        // 그룹화된 방문 리스트를 날짜별로 나누기
+        Map<LocalDate, List<VisitList>> groupedByDate = visitLists.stream()
+                .collect(Collectors.groupingBy(vl -> vl.getCreatedAt().toLocalDate()));
+
+        // 날짜별 VisitListInfo 리스트를 저장할 Map
+        Map<LocalDate, List<VisitListInfo>> visitListInfosByDate = new LinkedHashMap<>();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        for (Map.Entry<LocalDate, List<VisitList>> entry : groupedByDate.entrySet()) {
+            LocalDate date = entry.getKey();
+            List<VisitList> visitListsForDate = entry.getValue();
+
+            // LocalDateTime을 기준으로 정렬
+            List<VisitList> sortedVisitListsForDate = visitListsForDate.stream()
+                    .sorted(Comparator.comparing(VisitList::getCreatedAt))
+                    .toList();
+
+            // 날짜별 VisitListInfo 리스트 생성
+            List<VisitListInfo> visitListInfos = sortedVisitListsForDate.stream()
+                    .map(visitList -> {
+                        Long id = visitList.getId();
+                        Store store = storeQueryService.findStoreById(visitList.getStore().getId());
+
+                        LocalDateTime time = visitList.getCreatedAt();
+                        String formattedTime = time.format(formatter);
+
+                        return new VisitListInfo(
+                                id,
+                                store.getId(),
+                                store.getName(),
+                                store.getImageUrl(),
+                                formattedTime,
+                                visitList.getVisit_status()
+                        );
+                    })
+                    .collect(Collectors.toList());
+
+            visitListInfosByDate.put(date, visitListInfos);
+        }
+
+        return visitListInfosByDate;
     }
 
     public void deleteVisitList(Long visitListId) {

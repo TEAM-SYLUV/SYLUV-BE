@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -91,16 +93,36 @@ public class MarketController {
             value = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "방문 리스트 조회 성공",
+                            description = "전체 방문 리스트 조회 성공",
                             useReturnTypeSchema = true
                     )
             }
     )
-    @Operation(summary = "방문 리스트 조회 API", description = "방문 리스트 조회 API 입니다.")
-    public ApplicationResponse<List<VisitListInfo>> findVisitList(@RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken) {
+    @Operation(summary = "전체 방문 리스트 조회 API", description = "전체 방문 리스트 조회 API 입니다.")
+    public ApplicationResponse<Map<LocalDate, List<VisitListInfo>>> findVisitList(
+            @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken) {
 
-        final List<VisitListInfo> visitList = marketInfoUseCase.findVisitList(accessToken);
-        return ApplicationResponse.ok(visitList);
+        Map<LocalDate, List<VisitListInfo>> visitListByDate = marketInfoUseCase.findVisitList(accessToken);
+        return ApplicationResponse.ok(visitListByDate);
+    }
+
+    // 당일 방문 리스트 조회 ( 자정에 삭제 / 방문 완료 시 삭제 )
+    @GetMapping("/visitlist/today")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "당일 방문 리스트 조회 성공",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "당일 방문 리스트 조회 API", description = "당일 방문 리스트 조회 API 입니다.")
+    public ApplicationResponse<Map<LocalDate, List<VisitListInfo>>> getTodayVisitList(
+            @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken) {
+
+        Map<LocalDate, List<VisitListInfo>> visitListInfos = marketInfoUseCase.findTodayVisitList(accessToken);
+        return ApplicationResponse.ok(visitListInfos);
     }
 
     // 방문 리스트 - 준비 완료로 변경
