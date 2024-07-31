@@ -56,7 +56,7 @@ public class MarketInfoUseCase {
             Long id = i.getId();
             Store store = storeQueryService.findStoreById(i.getStore().getId());
 
-            VisitListInfo visitListInfo = new VisitListInfo(id, store.getId(), store.getName(), i.getVisit_status());
+            VisitListInfo visitListInfo = new VisitListInfo(id, store.getId(), store.getName(), store.getImageUrl(), i.getVisit_status());
             visitListInfos.add(visitListInfo);
         }
 

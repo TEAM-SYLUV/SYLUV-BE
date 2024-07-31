@@ -28,5 +28,11 @@ public class VisitList extends BaseEntity {
 
     private VisitStatus visit_status;
 
+    public void updateToPrepared() {
+        this.visit_status = VisitStatus.PREPARED;
+    }
 
+    public void updateToVisited() {
+        this.visit_status = VisitStatus.VISITED;
+    }
 }

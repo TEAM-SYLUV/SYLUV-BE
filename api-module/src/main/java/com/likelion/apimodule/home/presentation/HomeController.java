@@ -3,6 +3,7 @@ package com.likelion.apimodule.home.presentation;
 import com.likelion.apimodule.home.application.HomeFindUseCase;
 import com.likelion.apimodule.home.application.HomeSaveUseCase;
 import com.likelion.apimodule.home.dto.HomeInfo;
+import com.likelion.apimodule.home.dto.MarketFiltered;
 import com.likelion.commonmodule.exception.common.ApplicationResponse;
 import com.likelion.commonmodule.security.util.AuthConsts;
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,9 +65,9 @@ public class HomeController {
             }
     )
     @Operation(summary = "시장 리스트 검색 API", description = "시장 리스트 검색 API 입니다.")
-    public ApplicationResponse<List<String>> findALlMarkets() {
+    public ApplicationResponse<List<MarketFiltered>> findALlMarkets() {
 
-        List<String> names = homeFindUseCase.findAllMarkets();
+        List<MarketFiltered> names = homeFindUseCase.findAllMarkets();
         return ApplicationResponse.ok(names);
     }
 
@@ -82,9 +83,9 @@ public class HomeController {
             }
     )
     @Operation(summary = "시장 정보 확인 API", description = "시장 정보 확인 API 입니다.")
-    public ApplicationResponse<String> findNearestMarket(@RequestParam String xloc, @RequestParam String yloc) {
+    public ApplicationResponse<MarketFiltered> findNearestMarket(@RequestParam String xloc, @RequestParam String yloc) {
 
 //        String nearestMarket = homeFindUseCase.findNearestMarket(xloc, yloc);
-        return ApplicationResponse.ok("광장시장");
+        return ApplicationResponse.ok(new MarketFiltered(1L, "광장시장"));
     }
 }

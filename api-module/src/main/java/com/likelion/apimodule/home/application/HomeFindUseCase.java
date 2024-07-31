@@ -2,6 +2,7 @@ package com.likelion.apimodule.home.application;
 
 import com.likelion.apimodule.home.dto.HomeInfo;
 import com.likelion.apimodule.home.dto.HotListHome;
+import com.likelion.apimodule.home.dto.MarketFiltered;
 import com.likelion.apimodule.home.dto.VisitListHome;
 import com.likelion.apimodule.security.util.JwtUtil;
 import com.likelion.coremodule.market.domain.Market;
@@ -31,10 +32,13 @@ public class HomeFindUseCase {
     private final JwtUtil jwtUtil;
     private final UserQueryService userQueryService;
 
-    public List<String> findAllMarkets() {
+    public List<MarketFiltered> findAllMarkets() {
 
         return marketQueryService.findAllMarkets().stream()
-                .map(market -> market.getName())
+                .map(market -> new MarketFiltered(
+                        market.getId(),          // marketId
+                        market.getName()         // marketName
+                ))
                 .collect(Collectors.toList());
     }
 
@@ -58,6 +62,7 @@ public class HomeFindUseCase {
             }
 
             VisitListHome visitListHome = new VisitListHome(
+                    market.getId(),
                     market.getName(),
                     market.getLocation(),
                     storeList.size(),
@@ -70,6 +75,7 @@ public class HomeFindUseCase {
             int qrVisit = (marketQrVisit != null) ? marketQrVisit.getQrVisit() : 0;
 
             HotListHome hotListHome = new HotListHome(
+                    market.getId(),
                     market.getName(),
                     market.getLocation(),
                     qrVisit

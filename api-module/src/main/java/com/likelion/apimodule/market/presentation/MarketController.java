@@ -1,6 +1,7 @@
 package com.likelion.apimodule.market.presentation;
 
 import com.likelion.apimodule.market.application.MarketInfoUseCase;
+import com.likelion.apimodule.market.application.VisitListSaveUseCase;
 import com.likelion.apimodule.market.dto.MarketInfo;
 import com.likelion.apimodule.market.dto.VisitListInfo;
 import com.likelion.apimodule.store.application.StoreInfoUseCase;
@@ -25,6 +26,7 @@ import java.util.List;
 public class MarketController {
 
     private final MarketInfoUseCase marketInfoUseCase;
+    private final VisitListSaveUseCase visitListSaveUseCase;
     private final StoreInfoUseCase storeInfoUseCase;
 
     // 시장 정보
@@ -99,6 +101,42 @@ public class MarketController {
 
         final List<VisitListInfo> visitList = marketInfoUseCase.findVisitList();
         return ApplicationResponse.ok(visitList);
+    }
+
+    // 방문 리스트 - 준비 완료로 변경
+    @PatchMapping("/{visitlistId}/visitlist/prepared}")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "방문 리스트 준비 완료로 변경 - 상인 뷰에서 진행",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "방문 리스트 준비 완료로 변경 API", description = "방문 리스트 준비 완료로 변경 API 입니다.")
+    public ApplicationResponse<String> changeToPrepared(@PathVariable Long visitlistId) {
+
+        visitListSaveUseCase.updateToPrepared(visitlistId);
+        return ApplicationResponse.ok("준비 완료로 변경했습니다.");
+    }
+
+    // 방문 리스트 - 방문 완료로 변경
+    @PatchMapping("/{visitlistId}/visitlist/visited}")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "방문 리스트 방문 완료로 변경",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "방문 리스트 방문 완료로 변경 API", description = "방문 리스트 방문 완료로 변경 API 입니다.")
+    public ApplicationResponse<String> changeToVisited(@PathVariable Long visitlistId) {
+
+        visitListSaveUseCase.updateToVisited(visitlistId);
+        return ApplicationResponse.ok("준비 완료로 변경했습니다.");
     }
 
     // 방문 리스트 삭제
