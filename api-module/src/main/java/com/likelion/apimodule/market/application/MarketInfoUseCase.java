@@ -16,6 +16,8 @@ import com.likelion.coremodule.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +64,11 @@ public class MarketInfoUseCase {
             Long id = i.getId();
             Store store = storeQueryService.findStoreById(i.getStore().getId());
 
-            VisitListInfo visitListInfo = new VisitListInfo(id, store.getId(), store.getName(), store.getImageUrl(), i.getVisit_status());
+            LocalDateTime time = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            String formattedTime = time.format(formatter);
+
+            VisitListInfo visitListInfo = new VisitListInfo(id, store.getId(), store.getName(), store.getImageUrl(), formattedTime, i.getVisit_status());
             visitListInfos.add(visitListInfo);
         }
 

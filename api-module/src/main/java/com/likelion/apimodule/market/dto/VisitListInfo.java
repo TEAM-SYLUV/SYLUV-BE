@@ -6,5 +6,6 @@ public record VisitListInfo(Long visitListId,
                             Long storeId,
                             String store,
                             String imageUrl,
+                            String visitedTime,
                             VisitStatus status) {
 }

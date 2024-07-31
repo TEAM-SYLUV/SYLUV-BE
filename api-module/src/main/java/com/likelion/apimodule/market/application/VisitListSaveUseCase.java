@@ -22,6 +22,6 @@ public class VisitListSaveUseCase {
     public void updateToVisited(String accessToken, Long visitListId) {
 
         VisitList visitList = visitListQueryService.findVisitListById(visitListId);
-        visitList.updateToPrepared();
+        visitList.updateToVisited();
     }
 }
