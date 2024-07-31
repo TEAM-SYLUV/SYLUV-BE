@@ -97,14 +97,14 @@ public class MarketController {
             }
     )
     @Operation(summary = "방문 리스트 조회 API", description = "방문 리스트 조회 API 입니다.")
-    public ApplicationResponse<List<VisitListInfo>> findVisitList() {
+    public ApplicationResponse<List<VisitListInfo>> findVisitList(@RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken) {
 
-        final List<VisitListInfo> visitList = marketInfoUseCase.findVisitList();
+        final List<VisitListInfo> visitList = marketInfoUseCase.findVisitList(accessToken);
         return ApplicationResponse.ok(visitList);
     }
 
     // 방문 리스트 - 준비 완료로 변경
-    @PatchMapping("/{visitlistId}/visitlist/prepared}")
+    @PatchMapping("/{visitlistId}/visitlist/prepared")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -115,14 +115,15 @@ public class MarketController {
             }
     )
     @Operation(summary = "방문 리스트 준비 완료로 변경 API", description = "방문 리스트 준비 완료로 변경 API 입니다.")
-    public ApplicationResponse<String> changeToPrepared(@PathVariable Long visitlistId) {
+    public ApplicationResponse<String> changeToPrepared(@RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken,
+                                                        @PathVariable Long visitlistId) {
 
-        visitListSaveUseCase.updateToPrepared(visitlistId);
+        visitListSaveUseCase.updateToPrepared(accessToken, visitlistId);
         return ApplicationResponse.ok("준비 완료로 변경했습니다.");
     }
 
     // 방문 리스트 - 방문 완료로 변경
-    @PatchMapping("/{visitlistId}/visitlist/visited}")
+    @PatchMapping("/{visitlistId}/visitlist/visited")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -133,9 +134,10 @@ public class MarketController {
             }
     )
     @Operation(summary = "방문 리스트 방문 완료로 변경 API", description = "방문 리스트 방문 완료로 변경 API 입니다.")
-    public ApplicationResponse<String> changeToVisited(@PathVariable Long visitlistId) {
+    public ApplicationResponse<String> changeToVisited(@RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken,
+                                                       @PathVariable Long visitlistId) {
 
-        visitListSaveUseCase.updateToVisited(visitlistId);
+        visitListSaveUseCase.updateToVisited(accessToken, visitlistId);
         return ApplicationResponse.ok("준비 완료로 변경했습니다.");
     }
 

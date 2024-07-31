@@ -11,6 +11,8 @@ import com.likelion.coremodule.market.domain.Market;
 import com.likelion.coremodule.market.service.MarketQueryService;
 import com.likelion.coremodule.store.domain.Store;
 import com.likelion.coremodule.store.service.StoreQueryService;
+import com.likelion.coremodule.user.application.UserQueryService;
+import com.likelion.coremodule.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ public class MarketInfoUseCase {
     private final MarketQueryService marketQueryService;
     private final VisitListQueryService visitListQueryService;
     private final StoreQueryService storeQueryService;
+    private final UserQueryService userQueryService;
     private final JwtUtil jwtUtil;
 
     public MarketInfo findMarketInfo(Long marketId) {
@@ -47,10 +50,13 @@ public class MarketInfoUseCase {
         marketQueryService.saveVisitList(storeId, email);
     }
 
-    public List<VisitListInfo> findVisitList() {
+    public List<VisitListInfo> findVisitList(String accessToken) {
+
+        String email = jwtUtil.getEmail(accessToken);
+        User user = userQueryService.findByEmail(email);
 
         List<VisitListInfo> visitListInfos = new ArrayList<>();
-        List<VisitList> visitLists = visitListQueryService.findAllVisitList();
+        List<VisitList> visitLists = visitListQueryService.findVisitListsByUserId(user.getUserId());
 
         for (VisitList i : visitLists) {
             Long id = i.getId();

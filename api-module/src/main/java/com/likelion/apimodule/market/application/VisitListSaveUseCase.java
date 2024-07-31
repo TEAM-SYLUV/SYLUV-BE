@@ -13,13 +13,13 @@ public class VisitListSaveUseCase {
 
     private final VisitListQueryService visitListQueryService;
 
-    public void updateToPrepared(Long visitListId) {
+    public void updateToPrepared(String accessToken, Long visitListId) {
 
         VisitList visitList = visitListQueryService.findVisitListById(visitListId);
         visitList.updateToPrepared();
     }
 
-    public void updateToVisited(Long visitListId) {
+    public void updateToVisited(String accessToken, Long visitListId) {
 
         VisitList visitList = visitListQueryService.findVisitListById(visitListId);
         visitList.updateToPrepared();
