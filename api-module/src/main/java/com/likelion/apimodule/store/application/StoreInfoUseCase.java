@@ -4,6 +4,7 @@ import com.likelion.apimodule.security.util.JwtUtil;
 import com.likelion.apimodule.store.dto.MenuDetailDTO;
 import com.likelion.apimodule.store.dto.StoreInfo;
 import com.likelion.apimodule.store.dto.StoreResponse;
+import com.likelion.apimodule.store.mapper.MenuMapper;
 import com.likelion.coremodule.cart.domain.Cart;
 import com.likelion.coremodule.cart.service.CartQueryService;
 import com.likelion.coremodule.menu.domain.Menu;
@@ -35,6 +36,7 @@ public class StoreInfoUseCase {
     private final JwtUtil jwtUtil;
 
     public List<StoreInfo> findStoreInfo() {
+
         List<Store> storeList = storeQueryService.findAllStore();
         List<StoreInfo> storeInfoList = new ArrayList<>();
 
@@ -56,6 +58,12 @@ public class StoreInfoUseCase {
         }
 
         return storeInfoList;
+    }
+
+    public MenuDetailDTO findMenuById(Long menuId) {
+
+        Menu menu = menuQueryService.findMenuById(menuId);
+        return MenuMapper.toInfoDTO(menu);
     }
 
     private StoreInfo getStoreInfo(Store store, List<Review> reviews, List<MenuDetailDTO> menuDetails) {

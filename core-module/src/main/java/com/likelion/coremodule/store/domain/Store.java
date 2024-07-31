@@ -29,9 +29,11 @@ public class Store extends BaseEntity {
     private String openHours;
     private String closeHours;
     private String contact;
+
+    @Column(columnDefinition = "TEXT")
     private String imageUrl;
-    private Integer xloc;
-    private Integer yloc;
+    private String xloc;
+    private String yloc;
 
     @JsonValue
     public String getCategoryValue() {
