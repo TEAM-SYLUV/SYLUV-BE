@@ -64,6 +64,7 @@ public class HomeFindUseCase {
             VisitListHome visitListHome = new VisitListHome(
                     market.getId(),
                     market.getName(),
+                    market.getImageUrl(),
                     market.getLocation(),
                     storeList.size(),
                     totalStoreVisits,
@@ -77,6 +78,7 @@ public class HomeFindUseCase {
             HotListHome hotListHome = new HotListHome(
                     market.getId(),
                     market.getName(),
+                    market.getImageUrl(),
                     market.getLocation(),
                     qrVisit
             );
