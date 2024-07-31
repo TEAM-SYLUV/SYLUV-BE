@@ -82,9 +82,9 @@ public class HomeController {
             }
     )
     @Operation(summary = "시장 정보 확인 API", description = "시장 정보 확인 API 입니다.")
-    public ApplicationResponse<String> findNearestMarket(@RequestParam Integer xloc, @RequestParam Integer yloc) {
+    public ApplicationResponse<String> findNearestMarket(@RequestParam String xloc, @RequestParam String yloc) {
 
-        String nearestMarket = homeFindUseCase.findNearestMarket(xloc, yloc);
-        return ApplicationResponse.ok(nearestMarket);
+//        String nearestMarket = homeFindUseCase.findNearestMarket(xloc, yloc);
+        return ApplicationResponse.ok("광장시장");
     }
 }

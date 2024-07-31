@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +33,9 @@ public class HomeFindUseCase {
 
     public List<String> findAllMarkets() {
 
-        return (List<String>) marketQueryService.findAllMarkets().stream().map(market -> market.getName());
+        return marketQueryService.findAllMarkets().stream()
+                .map(market -> market.getName())
+                .collect(Collectors.toList());
     }
 
     public HomeInfo findMarketLists(String accessToken) {
@@ -64,11 +67,12 @@ public class HomeFindUseCase {
             visitListHomeList.add(visitListHome);
 
             MarketQrVisit marketQrVisit = marketQueryService.findMarketVisit(market.getId());
+            int qrVisit = (marketQrVisit != null) ? marketQrVisit.getQrVisit() : 0;
 
             HotListHome hotListHome = new HotListHome(
                     market.getName(),
                     market.getLocation(),
-                    marketQrVisit.getQrVisit()
+                    qrVisit
             );
             hotListHomeList.add(hotListHome);
         }
