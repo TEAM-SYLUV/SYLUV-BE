@@ -13,9 +13,10 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 public class VisitList extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "visit_id")
+    @Column(name = "visitlist_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
