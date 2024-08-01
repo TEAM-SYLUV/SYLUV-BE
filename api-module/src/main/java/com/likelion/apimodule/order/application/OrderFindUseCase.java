@@ -1,5 +1,7 @@
 package com.likelion.apimodule.order.application;
 
+import com.likelion.apimodule.order.dto.MenuOrder;
+import com.likelion.apimodule.order.dto.OrderDetail;
 import com.likelion.apimodule.order.dto.OrderInfo;
 import com.likelion.apimodule.security.util.JwtUtil;
 import com.likelion.coremodule.VisitList.repository.VisitListRepository;
@@ -17,7 +19,10 @@ import com.likelion.coremodule.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +39,10 @@ public class OrderFindUseCase {
     private final MenuQueryService menuQueryService;
     private final MarketQueryService marketQueryService;
     private final VisitListRepository visitListRepository;
+
+    private static final DateTimeFormatter ORDER_NUMBER_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static final int ORDER_NUMBER_LENGTH = 4;
+    private static final SecureRandom random = new SecureRandom();
 
     public Map<LocalDate, List<OrderInfo>> findAllOrdersByDate(String accessToken) {
 
@@ -71,10 +80,52 @@ public class OrderFindUseCase {
         return ordersByDate;
     }
 
-//    public OrderInfo findMyOrderDetail(String accessToken) {
-//
-//        String email = jwtUtil.getEmail(accessToken);
-//        User user = userQueryService.findByEmail(email);
-//    }
+    public OrderDetail findMyOrderDetail(String accessToken, Long orderId) {
+
+        String email = jwtUtil.getEmail(accessToken);
+        User user = userQueryService.findByEmail(email);
+
+        Order order = orderQueryService.findOrderById(orderId);
+        List<OrderItem> items = orderQueryService.findOrderItemByOrderId(orderId);
+        Menu menu = menuQueryService.findMenuById(items.get(0).getMenu().getId());
+        Store store = storeQueryService.findStoreById(menu.getStore().getId());
+        Market market = marketQueryService.findMarket(store.getMarket().getId());
+
+        List<MenuOrder> menuOrders = new ArrayList<>();
+
+        Integer price = 0;
+        for (OrderItem o : items) {
+
+            Menu singleMenu = menuQueryService.findMenuById(o.getMenu().getId());
+            price += singleMenu.getPrice();
+
+            MenuOrder menuOrder = new MenuOrder(
+                    singleMenu.getName(),
+                    o.getQuantity(),
+                    singleMenu.getPrice()
+            );
+            menuOrders.add(menuOrder);
+        }
+
+        return new OrderDetail(
+                store.getName(),
+                order.getCreatedAt(),
+                generateOrderNumber(order.getCreatedAt()),
+                price,
+                "토스페이",
+                menuOrders
+        );
+    }
+
+    public String generateOrderNumber(LocalDateTime createdAt) {
+        String datePart = createdAt.format(ORDER_NUMBER_DATE_FORMAT);
+        String orderNumberPart = generateRandomNumber();
+        return datePart + orderNumberPart;
+    }
+
+    private String generateRandomNumber() {
+        int number = random.nextInt(10000);
+        return String.format("%04d", number);
+    }
 
 }
