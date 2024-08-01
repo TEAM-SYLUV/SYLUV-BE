@@ -1,5 +1,6 @@
 package com.likelion.coremodule.cart.domain;
 
+import com.likelion.commonmodule.exception.common.BaseEntity;
 import com.likelion.coremodule.menu.domain.Menu;
 import com.likelion.coremodule.user.domain.User;
 import jakarta.persistence.*;
@@ -10,10 +11,10 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
-public class Cart {
+public class Cart extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_id")
+    @Column(name = "cart_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -25,4 +26,8 @@ public class Cart {
     private Menu menu;
 
     private Integer quantity;
+
+    public void setCartQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
 }

@@ -1,19 +1,13 @@
 package com.likelion.apimodule.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.likelion.apimodule.security.user.CustomUserDetails;
 import com.likelion.apimodule.security.util.JwtUtil;
 import com.likelion.apimodule.user.dto.KakaoLoginRequest;
-import com.likelion.commonmodule.exception.common.ApiResponse;
-import com.likelion.commonmodule.exception.jwt.dto.JwtPair;
 import com.likelion.commonmodule.redis.util.RedisUtil;
-import com.likelion.commonmodule.security.util.HttpResponseUtil;
-import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

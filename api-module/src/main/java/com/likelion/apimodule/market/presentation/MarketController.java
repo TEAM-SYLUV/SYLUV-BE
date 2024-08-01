@@ -1,6 +1,7 @@
 package com.likelion.apimodule.market.presentation;
 
 import com.likelion.apimodule.market.application.MarketInfoUseCase;
+import com.likelion.apimodule.market.application.VisitListSaveUseCase;
 import com.likelion.apimodule.market.dto.MarketInfo;
 import com.likelion.apimodule.market.dto.VisitListInfo;
 import com.likelion.apimodule.store.application.StoreInfoUseCase;
@@ -15,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -25,10 +28,11 @@ import java.util.List;
 public class MarketController {
 
     private final MarketInfoUseCase marketInfoUseCase;
+    private final VisitListSaveUseCase visitListSaveUseCase;
     private final StoreInfoUseCase storeInfoUseCase;
 
     // 시장 정보
-    @GetMapping("/info")
+    @GetMapping("/{marketId}/info")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -39,9 +43,9 @@ public class MarketController {
             }
     )
     @Operation(summary = "시장 정보 확인 API", description = "시장 정보 확인 API 입니다.")
-    public ApplicationResponse<MarketInfo> getMarketInfo() {
+    public ApplicationResponse<MarketInfo> getMarketInfo(@PathVariable Long marketId) {
 
-        MarketInfo infos = marketInfoUseCase.findMarketInfo();
+        MarketInfo infos = marketInfoUseCase.findMarketInfo(marketId);
         return ApplicationResponse.ok(infos);
     }
 
@@ -89,16 +93,74 @@ public class MarketController {
             value = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "방문 리스트 조회 성공",
+                            description = "전체 방문 리스트 조회 성공",
                             useReturnTypeSchema = true
                     )
             }
     )
-    @Operation(summary = "방문 리스트 조회 API", description = "방문 리스트 조회 API 입니다.")
-    public ApplicationResponse<List<VisitListInfo>> findVisitList() {
+    @Operation(summary = "전체 방문 리스트 조회 API", description = "전체 방문 리스트 조회 API 입니다.")
+    public ApplicationResponse<Map<LocalDate, List<VisitListInfo>>> findVisitList(
+            @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken) {
 
-        final List<VisitListInfo> visitList = marketInfoUseCase.findVisitList();
-        return ApplicationResponse.ok(visitList);
+        Map<LocalDate, List<VisitListInfo>> visitListByDate = marketInfoUseCase.findVisitList(accessToken);
+        return ApplicationResponse.ok(visitListByDate);
+    }
+
+    // 당일 방문 리스트 조회 ( 자정에 삭제 / 방문 완료 시 삭제 )
+    @GetMapping("/visitlist/today")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "당일 방문 리스트 조회 성공",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "당일 방문 리스트 조회 API", description = "당일 방문 리스트 조회 API 입니다.")
+    public ApplicationResponse<Map<LocalDate, List<VisitListInfo>>> getTodayVisitList(
+            @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken) {
+
+        Map<LocalDate, List<VisitListInfo>> visitListInfos = marketInfoUseCase.findTodayVisitList(accessToken);
+        return ApplicationResponse.ok(visitListInfos);
+    }
+
+    // 방문 리스트 - 준비 완료로 변경
+    @PatchMapping("/{visitlistId}/visitlist/prepared")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "방문 리스트 준비 완료로 변경 - 상인 뷰에서 진행",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "방문 리스트 준비 완료로 변경 API", description = "방문 리스트 준비 완료로 변경 API 입니다.")
+    public ApplicationResponse<String> changeToPrepared(@RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken,
+                                                        @PathVariable Long visitlistId) {
+
+        visitListSaveUseCase.updateToPrepared(accessToken, visitlistId);
+        return ApplicationResponse.ok("준비 완료로 변경했습니다.");
+    }
+
+    // 방문 리스트 - 방문 완료로 변경
+    @PatchMapping("/{visitlistId}/visitlist/visited")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "방문 리스트 방문 완료로 변경",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "방문 리스트 방문 완료로 변경 API", description = "방문 리스트 방문 완료로 변경 API 입니다.")
+    public ApplicationResponse<String> changeToVisited(@RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken,
+                                                       @PathVariable Long visitlistId) {
+
+        visitListSaveUseCase.updateToVisited(accessToken, visitlistId);
+        return ApplicationResponse.ok("준비 완료로 변경했습니다.");
     }
 
     // 방문 리스트 삭제

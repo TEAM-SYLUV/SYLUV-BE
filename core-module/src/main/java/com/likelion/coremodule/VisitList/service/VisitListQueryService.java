@@ -22,4 +22,8 @@ public class VisitListQueryService {
     public VisitList findVisitListById(Long id) {
         return visitListRepository.findById(id).orElseThrow(() -> new VisitException(VisitErrorCode.NO_VISIT_LIST_INFO));
     }
+
+    public List<VisitList> findVisitListsByUserId(Long userId) {
+        return visitListRepository.findVisitListsByUserUserId(userId);
+    }
 }

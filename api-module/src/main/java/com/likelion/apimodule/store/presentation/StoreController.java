@@ -1,6 +1,7 @@
 package com.likelion.apimodule.store.presentation;
 
 import com.likelion.apimodule.store.application.StoreInfoUseCase;
+import com.likelion.apimodule.store.dto.MenuDetailDTO;
 import com.likelion.apimodule.store.dto.StoreInfo;
 import com.likelion.commonmodule.exception.common.ApplicationResponse;
 import com.likelion.commonmodule.security.util.AuthConsts;
@@ -39,6 +40,23 @@ public class StoreController {
 
         List<StoreInfo> infos = storeInfoUseCase.findStoreInfo();
         return ApplicationResponse.ok(infos);
+    }
+
+    @GetMapping("/{menuId}/info")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "가게 메뉴 정보 확인 성공",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "가게 메뉴 정보 확인 API", description = "가게 메뉴 정보 확인 API 입니다.")
+    public ApplicationResponse<MenuDetailDTO> getMenuInfoById(@PathVariable Long menuId) {
+
+        MenuDetailDTO info = storeInfoUseCase.findMenuById(menuId);
+        return ApplicationResponse.ok(info);
     }
 
     // 장바구니 추가

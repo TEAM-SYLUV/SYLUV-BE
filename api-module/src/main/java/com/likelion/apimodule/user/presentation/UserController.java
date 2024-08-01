@@ -2,7 +2,9 @@ package com.likelion.apimodule.user.presentation;
 
 import com.likelion.apimodule.user.application.LoginUseCase;
 import com.likelion.apimodule.user.dto.KakaoLoginRequest;
+import com.likelion.apimodule.user.dto.LoginInfo;
 import com.likelion.commonmodule.exception.common.ApplicationResponse;
+import com.likelion.commonmodule.exception.jwt.JwtAccessDeniedHandler;
 import com.likelion.commonmodule.security.util.AuthConsts;
 import com.likelion.coremodule.user.dto.LoginAddResponse;
 import com.likelion.coremodule.user.dto.LoginResponse;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final LoginUseCase loginUseCase;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @PostMapping("/login/kakao")
     @ApiResponses(
@@ -38,6 +41,22 @@ public class UserController {
     public ApplicationResponse<LoginAddResponse> kakaoLogin(@Valid @RequestBody KakaoLoginRequest kakaoLoginRequest) {
         LoginAddResponse response = loginUseCase.kakaoLogin(kakaoLoginRequest);
         return ApplicationResponse.ok(response);
+    }
+
+    @GetMapping("/mypage")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "마이페이지 정보 전달",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "마이페이지 정보 전달 API", description = "마이페이지 정보 전달 API입니다.")
+    public ApplicationResponse<LoginInfo> getLoginInfo(@RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken) {
+        LoginInfo info = loginUseCase.getLoginInfo(accessToken);
+        return ApplicationResponse.ok(info);
     }
 
     @GetMapping("/reissue")

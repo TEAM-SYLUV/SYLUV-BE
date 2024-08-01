@@ -1,5 +1,6 @@
 package com.likelion.coremodule.review.domain;
 
+import com.likelion.commonmodule.exception.common.BaseEntity;
 import com.likelion.coremodule.menu.domain.Menu;
 import com.likelion.coremodule.store.domain.Store;
 import com.likelion.coremodule.user.domain.User;
@@ -11,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
-public class Review {
+public class Review extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
