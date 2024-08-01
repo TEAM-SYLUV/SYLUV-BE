@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -38,11 +40,11 @@ public class OrderController {
             }
     )
     @Operation(summary = "나의 주문내역 확인 API", description = "나의 주문내역 API 입니다.")
-    public ApplicationResponse<List<OrderInfo>> getMyOrderInfo(
+    public ApplicationResponse<Map<LocalDate, List<OrderInfo>>> getMyOrderInfo(
             @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken
     ) {
 
-        List<OrderInfo> infos = orderFindUseCase.findAllOrders(accessToken);
+        Map<LocalDate, List<OrderInfo>> infos = orderFindUseCase.findAllOrdersByDate(accessToken);
         return ApplicationResponse.ok(infos);
     }
 
