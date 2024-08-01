@@ -18,6 +18,7 @@ import com.likelion.coremodule.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -42,19 +43,27 @@ public class MarketQueryService {
         return marketQrVisitRepository.findByMarketId(marketId);
     }
 
+    public Integer findMyMarketVisit(Long marketId, Long userId) {
+        return marketQrVisitRepository.countAllByMarketIdAndUserUserId(marketId, userId);
+    }
+
     public void saveVisitList(Long storeId, String email) {
 
         User user = userQueryService.findByEmail(email);
         Store store = storeQueryService.findStoreById(storeId);
 
-        if (visitListRepository.findVisitListByUserUserIdAndStoreId(user.getUserId(), storeId) != null) {
+        // 현재 날짜 가져오기
+        LocalDate today = LocalDate.now();
+
+        // 오늘 동일한 사용자가 동일한 가게를 방문한 기록이 있는지 확인
+        if (visitListRepository.findVisitListByUserUserIdAndStoreIdAndVisitedDate(user.getUserId(), storeId, today) != null) {
             throw new VisitException(VisitErrorCode.EXIST_VISIT_LIST_INFO);
         } else {
-
             final VisitList visitList = VisitList.builder()
                     .store(store)
                     .user(user)
                     .visit_status(VisitStatus.BEFORE)
+                    .visitedDate(today)
                     .build();
             visitListRepository.save(visitList);
         }

@@ -2,11 +2,9 @@ package com.likelion.apimodule.home.application;
 
 import com.likelion.apimodule.security.util.JwtUtil;
 import com.likelion.coremodule.market.domain.Market;
-import com.likelion.coremodule.market.domain.MarketQrVisit;
 import com.likelion.coremodule.market.service.HomeQueryService;
 import com.likelion.coremodule.market.service.MarketQueryService;
 import com.likelion.coremodule.store.domain.Store;
-import com.likelion.coremodule.store.domain.StoreVisit;
 import com.likelion.coremodule.store.service.StoreQueryService;
 import com.likelion.coremodule.user.application.UserQueryService;
 import com.likelion.coremodule.user.domain.User;

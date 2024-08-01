@@ -39,9 +39,11 @@ public class ReviewController {
             }
     )
     @Operation(summary = "전체 리뷰 확인 API", description = "전체 리뷰 확인 API 입니다.")
-    public ApplicationResponse<List<ReviewInfo>> getReviewInfo() {
+    public ApplicationResponse<List<ReviewInfo>> getReviewInfo(
+            @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken
+    ) {
 
-        List<ReviewInfo> infos = reviewFindUseCase.findAllReviews();
+        List<ReviewInfo> infos = reviewFindUseCase.findAllReviews(accessToken);
         return ApplicationResponse.ok(infos);
     }
 

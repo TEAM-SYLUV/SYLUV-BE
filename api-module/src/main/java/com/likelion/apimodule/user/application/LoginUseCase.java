@@ -2,7 +2,9 @@ package com.likelion.apimodule.user.application;
 
 import com.likelion.apimodule.security.util.JwtUtil;
 import com.likelion.apimodule.user.dto.KakaoLoginRequest;
+import com.likelion.apimodule.user.dto.LoginInfo;
 import com.likelion.coremodule.user.application.KakaoIdTokenDecodeService;
+import com.likelion.coremodule.user.application.UserQueryService;
 import com.likelion.coremodule.user.domain.User;
 import com.likelion.coremodule.user.dto.LoginAddResponse;
 import com.likelion.coremodule.user.dto.LoginResponse;
@@ -20,6 +22,7 @@ import java.util.Optional;
 public class LoginUseCase {
 
     private final KakaoIdTokenDecodeService kakaoIdTokenDecodeService;
+    private final UserQueryService userQueryService;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
@@ -49,6 +52,18 @@ public class LoginUseCase {
 
         final User newUser = User.createSocialUser(oidcDecodePayload.sub(), oidcDecodePayload.nickname(), oidcDecodePayload.picture(), oidcDecodePayload.email());
         return userRepository.save(newUser);
+    }
+
+    public LoginInfo getLoginInfo(String accessToken) {
+
+        String email = jwtUtil.getEmail(accessToken);
+        User user = userQueryService.findByEmail(email);
+
+        return new LoginInfo(
+                user.getName(),
+                user.getPicture(),
+                user.getEmail()
+        );
     }
 
     @Transactional

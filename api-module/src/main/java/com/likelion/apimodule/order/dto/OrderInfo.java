@@ -1,12 +1,11 @@
 package com.likelion.apimodule.order.dto;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 public record OrderInfo(
-        String marketName, // order -> visitlist -> store -> market
-        List<StoreOrder> orderList, // store
-        Integer totalPrice, // 계산
-        String date // order
-
+        String marketName,
+        String storeName,
+        Integer totalPrice,
+        LocalDateTime createdTime
 ) {
 }

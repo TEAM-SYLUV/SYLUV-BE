@@ -11,5 +11,6 @@ public record ReviewInfo(Long reviewId,
                          String menuName,
                          Integer beforeHours,
                          Integer beforeDay,
-                         Integer beforeWeek) {
+                         Integer beforeWeek,
+                         Boolean isMine) {
 }
