@@ -43,6 +43,10 @@ public class MarketQueryService {
         return marketQrVisitRepository.findByMarketId(marketId);
     }
 
+    public Integer findMyMarketVisit(Long marketId, Long userId) {
+        return marketQrVisitRepository.countAllByMarketIdAndUserUserId(marketId, userId);
+    }
+
     public void saveVisitList(Long storeId, String email) {
 
         User user = userQueryService.findByEmail(email);

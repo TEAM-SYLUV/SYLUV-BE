@@ -61,16 +61,18 @@ public class HomeFindUseCase {
                 totalStoreVisits += storeVisitList.size();
             }
 
-            VisitListHome visitListHome = new VisitListHome(
-                    market.getId(),
-                    market.getName(),
-                    market.getImageUrl(),
-                    market.getLocation(),
-                    storeList.size(),
-                    totalStoreVisits,
-                    market.getCreatedAt().toLocalDate()
-            );
-            visitListHomeList.add(visitListHome);
+            if (marketQueryService.findMyMarketVisit(market.getId(), user.getUserId()) > 0) {
+                VisitListHome visitListHome = new VisitListHome(
+                        market.getId(),
+                        market.getName(),
+                        market.getImageUrl(),
+                        market.getLocation(),
+                        storeList.size(),
+                        totalStoreVisits,
+                        market.getCreatedAt().toLocalDate()
+                );
+                visitListHomeList.add(visitListHome);
+            }
 
             MarketQrVisit marketQrVisit = marketQueryService.findMarketVisit(market.getId());
             int qrVisit = (marketQrVisit != null) ? marketQrVisit.getQrVisit() : 0;
