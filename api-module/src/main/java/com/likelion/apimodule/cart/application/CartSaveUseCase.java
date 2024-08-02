@@ -4,8 +4,6 @@ import com.likelion.apimodule.cart.dto.CartSaveReq;
 import com.likelion.apimodule.cart.dto.CartUpdateReq;
 import com.likelion.apimodule.security.util.JwtUtil;
 import com.likelion.coremodule.cart.domain.Cart;
-import com.likelion.coremodule.cart.exception.CartErrorCode;
-import com.likelion.coremodule.cart.exception.CartException;
 import com.likelion.coremodule.cart.service.CartQueryService;
 import com.likelion.coremodule.menu.domain.Menu;
 import com.likelion.coremodule.menu.service.MenuQueryService;
@@ -28,10 +26,10 @@ public class CartSaveUseCase {
     private final MenuQueryService menuQueryService;
 
     public Integer findMyCartCount(Long userId, Long menuId) {
-        return cartQueryService.findCartByUserIdAndMenuId(userId, menuId);
+        return cartQueryService.countCartByUserIdAndMenuId(userId, menuId);
     }
 
-    public void saveMyCart(String accessToken, CartSaveReq saveReq) {
+    public String saveMyCart(String accessToken, CartSaveReq saveReq) {
 
         String email = jwtUtil.getEmail(accessToken);
         User user = userQueryService.findByEmail(email);
@@ -39,10 +37,15 @@ public class CartSaveUseCase {
         Menu menu = menuQueryService.findMenuById(saveReq.menuId());
 
         if (findMyCartCount(user.getUserId(), menu.getId()) >= 1) {
-            throw new CartException(CartErrorCode.EXISTED_CART_INFO);
+
+            Cart cart = cartQueryService.findCartByUserIdAndMenuId(user.getUserId(), menu.getId());
+            cart.setCartQuantity(saveReq.quantity());
+
+            return "추가";
         } else {
             final Cart cart = Cart.builder().user(user).menu(menu).quantity(saveReq.quantity()).build();
             cartQueryService.saveCart(cart);
+            return "신규";
         }
     }
 

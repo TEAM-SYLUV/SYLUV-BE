@@ -2,7 +2,7 @@ name: Backend CD # actions 이름
 
 on:
   push:
-    branches: [ feat/order ]
+    branches: [ feat/qa-check ]
 
 jobs:
   deploy:
@@ -16,6 +16,20 @@ jobs:
 
       - name: 저장소 Checkout
         uses: actions/checkout@v3
+
+      - name: make application-prod yml file
+        run: |
+          cd ./api-module/src/main/resources
+          touch ./application-prod.yml
+          echo "${{ secrets.APPLICATION_PROD }}" > ./application-prod.yml
+        shell: bash
+
+      - name: make application-payment yml file
+        run: |
+          cd ./common-module/src/main/resources
+          touch ./application-payment.yml
+          echo "${{ secrets.APPLICATION_PAYMENT }}" > ./application-payment.yml
+        shell: bash
 
       - name: make application-s3 yml file
         run: |

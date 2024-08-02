@@ -36,4 +36,6 @@ out/
 ### VS Code ###
 .vscode/
 
+api-module/src/main/resources/application-prod.yml
 common-module/src/main/resources/application-s3.yml
+api-module/src/main/resources/application-payment.yml

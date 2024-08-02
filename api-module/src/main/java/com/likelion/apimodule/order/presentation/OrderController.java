@@ -1,8 +1,12 @@
 package com.likelion.apimodule.order.presentation;
 
+import com.likelion.apimodule.order.application.OrderDeleteUseCase;
 import com.likelion.apimodule.order.application.OrderFindUseCase;
 import com.likelion.apimodule.order.dto.OrderDetail;
 import com.likelion.apimodule.order.dto.OrderInfo;
+import com.likelion.apimodule.payment.dto.request.ApprovalRequest;
+import com.likelion.apimodule.payment.dto.response.ApprovalResponse;
+import com.likelion.apimodule.payment.service.PaymentService;
 import com.likelion.commonmodule.exception.common.ApplicationResponse;
 import com.likelion.commonmodule.security.util.AuthConsts;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +29,8 @@ import java.util.Map;
 public class OrderController {
 
     private final OrderFindUseCase orderFindUseCase;
+    private final PaymentService paymentService;
+    private final OrderDeleteUseCase orderDeleteUseCase;
 
     // 주문내역 조회
     @GetMapping
@@ -57,7 +63,7 @@ public class OrderController {
                     )
             }
     )
-    @Operation(summary = "나의 주문내역 확인 API", description = "나의 주문내역 API 입니다.")
+    @Operation(summary = "나의 주문내역 확인 API", description = "나의 주문내역 확인 API 입니다.")
     public ApplicationResponse<OrderDetail> findMyOrderDetail(
             @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken,
             @PathVariable Long orderId
@@ -67,8 +73,45 @@ public class OrderController {
         return ApplicationResponse.ok(orderDetail);
     }
 
-    // 주문하기
+    // 주문하기 + 토스 결제하기
+    @PostMapping("/toss")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "주문하기(방문리스트 준비중 추가) + 토스 결제",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "주문하기(방문리스트 준비중 추가) + 토스 결제 API", description = "주문하기(방문리스트 준비중 추가) + 토스 결제 API 입니다.")
+    public ApplicationResponse<ApprovalResponse> tossPayment(
+            @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken,
+            @RequestBody ApprovalRequest request
+    ) {
 
-    // 토스 결제하기
+        final ApprovalResponse approval = paymentService.approval(accessToken, request);
+        return ApplicationResponse.ok(approval);
+    }
 
+    // 주문 삭제
+    @DeleteMapping("/{orderId}/delete")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "나의 주문상세 삭제 성공",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "나의 주문내역 삭제 API", description = "나의 주문내역 삭제 API 입니다.")
+    public ApplicationResponse<String> deleteMyOrder(
+            @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken,
+            @PathVariable Long orderId
+    ) {
+
+        orderDeleteUseCase.deleteMyOrder(accessToken, orderId);
+        return ApplicationResponse.ok("주문내역이 삭제되었습니다.");
+    }
 }
