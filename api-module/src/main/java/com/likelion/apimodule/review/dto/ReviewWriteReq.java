@@ -1,7 +1,7 @@
 package com.likelion.apimodule.review.dto;
 
 public record ReviewWriteReq(
-        Long menuId,
+        Long orderId,
         Integer rate,
         String content
 ) {

@@ -9,4 +9,8 @@ public interface ReviewLikeRepository extends JpaRepository<ReviewLike, Long> {
 
     @Query("SELECT COUNT(rl) FROM ReviewLike rl WHERE rl.review.id = :reviewId")
     Long countByReviewId(@Param("reviewId") Long reviewId);
+
+    Integer countAllByUserUserIdAndReviewId(Long userId, Long reviewId);
+
+    Integer countAllByReviewId(Long reviewId);
 }

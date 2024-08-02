@@ -1,5 +1,7 @@
 package com.likelion.apimodule.review.dto;
 
+import java.util.List;
+
 public record ReviewInfo(Long reviewId,
                          String name,
                          String picture,
@@ -8,9 +10,10 @@ public record ReviewInfo(Long reviewId,
                          String image,
                          String likeCount,
                          String storeName,
-                         String menuName,
+                         List<String> menuName,
                          Integer beforeHours,
                          Integer beforeDay,
                          Integer beforeWeek,
-                         Boolean isMine) {
+                         Boolean isMine,
+                         Boolean HelpfulYn) {
 }
