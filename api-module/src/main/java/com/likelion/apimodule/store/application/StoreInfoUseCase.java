@@ -9,6 +9,9 @@ import com.likelion.coremodule.cart.domain.Cart;
 import com.likelion.coremodule.cart.service.CartQueryService;
 import com.likelion.coremodule.menu.domain.Menu;
 import com.likelion.coremodule.menu.service.MenuQueryService;
+import com.likelion.coremodule.order.domain.Order;
+import com.likelion.coremodule.order.domain.OrderItem;
+import com.likelion.coremodule.order.service.OrderQueryService;
 import com.likelion.coremodule.review.domain.Review;
 import com.likelion.coremodule.review.service.ReviewQueryService;
 import com.likelion.coremodule.store.domain.Store;
@@ -34,6 +37,7 @@ public class StoreInfoUseCase {
     private final CartQueryService cartQueryService;
     private final ReviewQueryService reviewQueryService;
     private final JwtUtil jwtUtil;
+    private final OrderQueryService orderQueryService;
 
     public List<StoreInfo> findStoreInfo() {
 
@@ -55,8 +59,16 @@ public class StoreInfoUseCase {
             List<Review> reviews = new ArrayList<>();
 
             for (Menu m : menus) {
-                List<Review> review = reviewQueryService.findReviewsByMenuId(m.getId());
-                reviews.addAll(review);
+
+                List<OrderItem> items = orderQueryService.findOrderItemsByMenuId(m.getId());
+                for (OrderItem item : items) {
+                    if (orderQueryService.countOrderById(item.getOrder().getId()) > 0) {
+                        Order order = orderQueryService.findOrderById(item.getOrder().getId());
+
+                        List<Review> review = reviewQueryService.findAllByOrderId(order.getId());
+                        reviews.addAll(review);
+                    }
+                }
             }
 
             final StoreInfo storeInfo = getStoreInfo(store, reviews, menuDetails);
