@@ -33,7 +33,7 @@ public class ReviewFindUseCase {
     private final OrderQueryService orderQueryService;
     private final JwtUtil jwtUtil;
 
-    public List<ReviewInfo> findAllReviews(String accessToken, Long menuId) {
+    public List<ReviewInfo> findAllReviews(String accessToken) {
 
         String email = jwtUtil.getEmail(accessToken);
         User myUser = userQueryService.findByEmail(email);

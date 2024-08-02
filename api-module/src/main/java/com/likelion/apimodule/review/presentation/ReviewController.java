@@ -28,7 +28,7 @@ public class ReviewController {
     private final ReviewSaveUseCase reviewSaveUseCase;
 
     // 리뷰 조회
-    @GetMapping("/{menuId}")
+    @GetMapping
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -40,11 +40,10 @@ public class ReviewController {
     )
     @Operation(summary = "전체 리뷰 확인 API", description = "전체 리뷰 확인 API 입니다.")
     public ApplicationResponse<List<ReviewInfo>> getReviewInfo(
-            @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken,
-            @PathVariable Long menuId
+            @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken
     ) {
 
-        List<ReviewInfo> infos = reviewFindUseCase.findAllReviews(accessToken, menuId);
+        List<ReviewInfo> infos = reviewFindUseCase.findAllReviews(accessToken);
         return ApplicationResponse.ok(infos);
     }
 
