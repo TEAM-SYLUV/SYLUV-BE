@@ -61,7 +61,7 @@ public class ReviewController {
     @Operation(summary = "리뷰 작성 API", description = "리뷰 작성 API 입니다.")
     public ApplicationResponse<String> writeReview(@RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken,
                                                    @RequestPart(value = "dto") ReviewWriteReq writeReq,
-                                                   @RequestPart(value = "file") MultipartFile multipartFile) {
+                                                   @RequestPart(value = "file") List<MultipartFile> multipartFile) {
 
         reviewSaveUseCase.saveReview(accessToken, writeReq, multipartFile);
         return ApplicationResponse.ok("리뷰가 정상적으로 작성되었습니다.");

@@ -7,7 +7,7 @@ public record ReviewInfo(Long reviewId,
                          String picture,
                          String rating,
                          String content,
-                         String image,
+                         List<String> image,
                          String likeCount,
                          String storeName,
                          List<String> menuName,
@@ -15,5 +15,5 @@ public record ReviewInfo(Long reviewId,
                          Integer beforeDay,
                          Integer beforeWeek,
                          Boolean isMine,
-                         Boolean HelpfulYn) {
+                         Boolean helpfulYn) {
 }

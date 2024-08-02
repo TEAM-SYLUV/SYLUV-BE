@@ -8,6 +8,7 @@ import com.likelion.coremodule.order.domain.Order;
 import com.likelion.coremodule.order.domain.OrderItem;
 import com.likelion.coremodule.order.service.OrderQueryService;
 import com.likelion.coremodule.review.domain.Review;
+import com.likelion.coremodule.review.domain.ReviewImage;
 import com.likelion.coremodule.review.service.ReviewQueryService;
 import com.likelion.coremodule.store.domain.Store;
 import com.likelion.coremodule.store.service.StoreQueryService;
@@ -65,7 +66,13 @@ public class ReviewFindUseCase {
             Long id = review.getId();
             String rating = review.getRating().toString();
             String content = review.getContent();
-            String image = review.getImageUrl();
+
+            List<ReviewImage> images = reviewQueryService.findImagesByReviewId(review.getId());
+            List<String> reviewImages = new ArrayList<>();
+            for (ReviewImage image : images) {
+                reviewImages.add(image.getImageUrl());
+            }
+
             String likeCount = reviewQueryService.findLikeCountByReviewId(review.getId()).toString();
 
             Store store = storeQueryService.findStoreById(menus.get(0).getStore().getId());
@@ -80,7 +87,7 @@ public class ReviewFindUseCase {
             boolean isMine = user.getUserId().equals(myUser.getUserId());
             boolean helpfulYn = reviewQueryService.countLikeCountByMine(user.getUserId(), review.getId()) > 0;
 
-            ReviewInfo reviewInfo = new ReviewInfo(id, name, picture, rating, content, image,
+            ReviewInfo reviewInfo = new ReviewInfo(id, name, picture, rating, content, reviewImages,
                     likeCount, storeName, menuNameList, hourDifference, dayDifference, weekDifference, isMine, helpfulYn);
             reviewInfos.add(reviewInfo);
         }
