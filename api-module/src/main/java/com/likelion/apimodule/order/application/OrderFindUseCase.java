@@ -70,8 +70,6 @@ public class OrderFindUseCase {
                 price += singleMenu.getPrice();
             }
 
-            boolean reviewYn = reviewQueryService.findReviewByOrderAndUser(order.getId(), user.getUserId()) != null;
-
             OrderInfo orderInfo = new OrderInfo(
                     order.getId(),
                     "결제 확인 대기",
@@ -80,8 +78,7 @@ public class OrderFindUseCase {
                     store.getImageUrl(),
                     menuInfos,
                     price,
-                    order.getCreatedAt(),
-                    reviewYn
+                    order.getCreatedAt()
             );
 
             // 날짜별로 OrderInfo 리스트를 담기
@@ -101,9 +98,10 @@ public class OrderFindUseCase {
         List<OrderItem> items = orderQueryService.findOrderItemByOrderId(orderId);
         Menu menu = menuQueryService.findMenuById(items.get(0).getMenu().getId());
         Store store = storeQueryService.findStoreById(menu.getStore().getId());
-        Market market = marketQueryService.findMarket(store.getMarket().getId());
+//        Market market = marketQueryService.findMarket(store.getMarket().getId());
 
         List<MenuOrder> menuOrders = new ArrayList<>();
+        boolean reviewYn = reviewQueryService.findReviewByOrderAndUser(order.getId(), user.getUserId()) != null;
 
         Integer price = 0;
         for (OrderItem o : items) {
@@ -113,6 +111,7 @@ public class OrderFindUseCase {
 
             MenuOrder menuOrder = new MenuOrder(
                     singleMenu.getName(),
+                    singleMenu.getImageUrl(),
                     o.getQuantity(),
                     singleMenu.getPrice()
             );
@@ -121,10 +120,12 @@ public class OrderFindUseCase {
 
         return new OrderDetail(
                 store.getName(),
+                store.getImageUrl(),
                 order.getCreatedAt(),
                 order.getOrderNum(),
                 price,
                 "토스페이",
+                reviewYn,
                 menuOrders
         );
     }

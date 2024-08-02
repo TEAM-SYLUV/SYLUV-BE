@@ -11,7 +11,6 @@ public record OrderInfo(
         String imageUrl,
         List<MenuInfo> menuInfos,
         Integer totalPrice,
-        LocalDateTime createdTime,
-        Boolean reviewYn
+        LocalDateTime createdTime
 ) {
 }
