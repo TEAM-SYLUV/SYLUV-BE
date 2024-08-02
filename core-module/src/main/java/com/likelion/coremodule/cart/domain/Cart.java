@@ -30,4 +30,5 @@ public class Cart extends BaseEntity {
     public void setCartQuantity(Integer quantity) {
         this.quantity = quantity;
     }
+
 }
