@@ -61,8 +61,8 @@ public class CartController {
     public ApplicationResponse<String> saveMyCart(@RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken,
                                                   @RequestBody CartSaveReq saveReq) {
 
-        cartSaveUseCase.saveMyCart(accessToken, saveReq);
-        return ApplicationResponse.ok("장바구니 저장 완료");
+        final String myCart = cartSaveUseCase.saveMyCart(accessToken, saveReq);
+        return ApplicationResponse.ok("장바구니 저장 완료 -> " + myCart);
     }
 
     // 장바구니 추가

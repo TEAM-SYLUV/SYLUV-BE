@@ -16,17 +16,14 @@ public class MenuQueryService {
     private final MenuRepository menuRepository;
 
     public List<Menu> findAllMenus() {
-
         return menuRepository.findAll();
     }
 
     public Menu findMenuById(Long menuId) {
-
         return menuRepository.findById(menuId).orElseThrow(() -> new MenuException(MenuErrorCode.NO_MENU_INFO));
     }
 
     public List<Menu> findMenusByStoreId(Long storeId) {
-
         return menuRepository.findAllByStoreId(storeId);
     }
 }

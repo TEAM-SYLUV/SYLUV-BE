@@ -21,7 +21,11 @@ public class CartQueryService {
         return cartRepository.findCartsByUserUserId(userId);
     }
 
-    public int findCartByUserIdAndMenuId(Long userId, Long menuId) {
+    public Cart findCartByUserIdAndMenuId(Long userId, Long menuId) {
+        return cartRepository.findCartByUserUserIdAndMenuId(userId, menuId);
+    }
+
+    public int countCartByUserIdAndMenuId(Long userId, Long menuId) {
         return cartRepository.countCartsByUserUserIdAndMenuId(userId, menuId);
     }
 

@@ -1,8 +1,7 @@
 package com.likelion.coremodule.review.domain;
 
 import com.likelion.commonmodule.exception.common.BaseEntity;
-import com.likelion.coremodule.menu.domain.Menu;
-import com.likelion.coremodule.store.domain.Store;
+import com.likelion.coremodule.order.domain.Order;
 import com.likelion.coremodule.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,11 +23,10 @@ public class Review extends BaseEntity {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     private String content;
     private Integer rating;
-    private String imageUrl;
 
 }

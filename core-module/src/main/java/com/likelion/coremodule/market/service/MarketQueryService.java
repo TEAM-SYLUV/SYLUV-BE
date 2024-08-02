@@ -5,6 +5,7 @@ import com.likelion.coremodule.VisitList.domain.VisitStatus;
 import com.likelion.coremodule.VisitList.exception.VisitErrorCode;
 import com.likelion.coremodule.VisitList.exception.VisitException;
 import com.likelion.coremodule.VisitList.repository.VisitListRepository;
+import com.likelion.coremodule.VisitList.service.VisitListQueryService;
 import com.likelion.coremodule.market.domain.Market;
 import com.likelion.coremodule.market.domain.MarketQrVisit;
 import com.likelion.coremodule.market.exception.MarketErrorCode;
@@ -17,6 +18,7 @@ import com.likelion.coremodule.user.application.UserQueryService;
 import com.likelion.coremodule.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,6 +29,7 @@ public class MarketQueryService {
 
     private final MarketRepository marketRepository;
     private final MarketQrVisitRepository marketQrVisitRepository;
+    private final VisitListQueryService visitListQueryService;
     private final UserQueryService userQueryService;
     private final StoreQueryService storeQueryService;
     private final VisitListRepository visitListRepository;
@@ -47,6 +50,31 @@ public class MarketQueryService {
         return marketQrVisitRepository.countAllByMarketIdAndUserUserId(marketId, userId);
     }
 
+    @Transactional
+    public void saveVisitListToPreparing(Long storeId, String email) {
+
+        User user = userQueryService.findByEmail(email);
+        Store store = storeQueryService.findStoreById(storeId);
+
+        // 현재 날짜 가져오기
+        LocalDate today = LocalDate.now();
+
+        // 오늘 동일한 사용자가 동일한 가게를 방문한 기록이 있는지 확인
+        if (visitListRepository.findVisitListByUserUserIdAndStoreIdAndVisitedDate(user.getUserId(), storeId, today) != null) {
+            VisitList visitList = visitListRepository.findVisitListByUserUserIdAndStoreIdAndVisitedDate(user.getUserId(), storeId, today);
+            visitList.updateToPreparing();
+        } else {
+            final VisitList visitList = VisitList.builder()
+                    .store(store)
+                    .user(user)
+                    .visit_status(VisitStatus.PREPARING)
+                    .visitedDate(today)
+                    .build();
+            visitListRepository.save(visitList);
+        }
+    }
+
+    @Transactional
     public void saveVisitList(Long storeId, String email) {
 
         User user = userQueryService.findByEmail(email);

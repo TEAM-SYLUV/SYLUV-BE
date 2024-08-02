@@ -91,6 +91,7 @@ public class MarketInfoUseCase {
                                 id,
                                 store.getId(),
                                 store.getName(),
+                                store.getCategory(),
                                 store.getImageUrl(),
                                 formattedTime,
                                 visitList.getVisit_status()
@@ -150,6 +151,7 @@ public class MarketInfoUseCase {
                                 id,
                                 store.getId(),
                                 store.getName(),
+                                store.getCategory(),
                                 store.getImageUrl(),
                                 formattedTime,
                                 visitList.getVisit_status()
