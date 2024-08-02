@@ -26,8 +26,8 @@ public class ReviewQueryService {
         return reviewRepository.findById(id).orElseThrow(() -> new ReviewException(ReviewErrorCode.NO_MENU_INFO));
     }
 
-    public List<Review> findReviewsByStoreId(Long menuId) {
-        return reviewRepository.findReviewsByMenuId(menuId);
+    public List<Review> findReviewsByMenuId(Long menuId) {
+        return reviewRepository.findAllByMenuId(menuId);
     }
 
     public Long findLikeCountByReviewId(Long reviewId) {

@@ -29,9 +29,9 @@ public class ReviewFindUseCase {
     private final MenuQueryService menuQueryService;
     private final JwtUtil jwtUtil;
 
-    public List<ReviewInfo> findAllReviews(String accessToken) {
+    public List<ReviewInfo> findAllReviews(String accessToken, Long menuId) {
 
-        List<Review> allReviews = reviewQueryService.findAllReviews();
+        List<Review> allReviews = reviewQueryService.findReviewsByMenuId(menuId);
         List<ReviewInfo> reviewInfos = new ArrayList<>();
 
         String email = jwtUtil.getEmail(accessToken);

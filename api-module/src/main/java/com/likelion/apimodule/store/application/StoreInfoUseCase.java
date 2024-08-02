@@ -52,7 +52,13 @@ public class StoreInfoUseCase {
                     .toList();
 
             // 리뷰 관련 cnt, avg
-            List<Review> reviews = reviewQueryService.findReviewsByStoreId(store.getId());
+            List<Review> reviews = new ArrayList<>();
+
+            for (Menu m : menus) {
+                List<Review> review = reviewQueryService.findReviewsByMenuId(m.getId());
+                reviews.addAll(review);
+            }
+
             final StoreInfo storeInfo = getStoreInfo(store, reviews, menuDetails);
             storeInfoList.add(storeInfo);
         }
