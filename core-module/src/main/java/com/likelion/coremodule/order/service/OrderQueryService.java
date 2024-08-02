@@ -26,7 +26,28 @@ public class OrderQueryService {
         return orderItemRepository.findOrderItemsByOrderId(orderId);
     }
 
+    public Integer countOrderById(Long orderId) {
+        return orderRepository.countAllById(orderId);
+    }
+
+    public List<OrderItem> findOrderItemsByMenuId(Long menuId) {
+        return orderItemRepository.findOrderItemsByMenuId(menuId);
+    }
+
     public Order findOrderById(Long orderId) {
         return orderRepository.findById(orderId).orElseThrow(() -> new OrderException(OrderErrorCode.NO_ORDER_INFO));
+    }
+
+    public void saveOrder(Order order) {
+        orderRepository.save(order);
+    }
+
+    public void saveOrderItem(OrderItem orderItem) {
+        orderItemRepository.save(orderItem);
+    }
+
+    public void deleteMyOrder(Long orderId) {
+        orderRepository.deleteById(orderId);
+        orderItemRepository.deleteAllByOrderId(orderId);
     }
 }

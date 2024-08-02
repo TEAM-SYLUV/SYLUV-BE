@@ -1,5 +1,6 @@
 package com.likelion.apimodule.order.application;
 
+import com.likelion.apimodule.order.dto.MenuInfo;
 import com.likelion.apimodule.order.dto.MenuOrder;
 import com.likelion.apimodule.order.dto.OrderDetail;
 import com.likelion.apimodule.order.dto.OrderInfo;
@@ -12,6 +13,7 @@ import com.likelion.coremodule.menu.service.MenuQueryService;
 import com.likelion.coremodule.order.domain.Order;
 import com.likelion.coremodule.order.domain.OrderItem;
 import com.likelion.coremodule.order.service.OrderQueryService;
+import com.likelion.coremodule.review.service.ReviewQueryService;
 import com.likelion.coremodule.store.domain.Store;
 import com.likelion.coremodule.store.service.StoreQueryService;
 import com.likelion.coremodule.user.application.UserQueryService;
@@ -19,10 +21,7 @@ import com.likelion.coremodule.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,10 +38,7 @@ public class OrderFindUseCase {
     private final MenuQueryService menuQueryService;
     private final MarketQueryService marketQueryService;
     private final VisitListRepository visitListRepository;
-
-    private static final DateTimeFormatter ORDER_NUMBER_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
-    private static final int ORDER_NUMBER_LENGTH = 4;
-    private static final SecureRandom random = new SecureRandom();
+    private final ReviewQueryService reviewQueryService;
 
     public Map<LocalDate, List<OrderInfo>> findAllOrdersByDate(String accessToken) {
 
@@ -55,8 +51,17 @@ public class OrderFindUseCase {
         for (Order order : orders) {
 
             List<OrderItem> orderItems = orderQueryService.findOrderItemByOrderId(order.getId());
-            Menu menu = menuQueryService.findMenuById(orderItems.get(0).getMenu().getId());
-            Store store = storeQueryService.findStoreById(menu.getStore().getId());
+
+            List<Menu> menus = new ArrayList<>();
+            List<MenuInfo> menuInfos = new ArrayList<>();
+            for (OrderItem o : orderItems) {
+                Menu menu = menuQueryService.findMenuById(o.getMenu().getId());
+                menus.add(menu);
+
+                MenuInfo menuInfo = new MenuInfo(menu.getName(), menu.getImageUrl());
+                menuInfos.add(menuInfo);
+            }
+            Store store = storeQueryService.findStoreById(menus.get(0).getStore().getId());
             Market market = marketQueryService.findMarket(store.getMarket().getId());
 
             Integer price = 0;
@@ -65,13 +70,18 @@ public class OrderFindUseCase {
                 price += singleMenu.getPrice();
             }
 
+            boolean reviewYn = reviewQueryService.findReviewByOrderAndUser(order.getId(), user.getUserId()) != null;
+
             OrderInfo orderInfo = new OrderInfo(
                     order.getId(),
                     "결제 확인 대기",
                     market.getName(),
                     store.getName(),
+                    store.getImageUrl(),
+                    menuInfos,
                     price,
-                    order.getCreatedAt()
+                    order.getCreatedAt(),
+                    reviewYn
             );
 
             // 날짜별로 OrderInfo 리스트를 담기
@@ -112,22 +122,11 @@ public class OrderFindUseCase {
         return new OrderDetail(
                 store.getName(),
                 order.getCreatedAt(),
-                generateOrderNumber(order.getCreatedAt()),
+                order.getOrderNum(),
                 price,
                 "토스페이",
                 menuOrders
         );
-    }
-
-    public String generateOrderNumber(LocalDateTime createdAt) {
-        String datePart = createdAt.format(ORDER_NUMBER_DATE_FORMAT);
-        String orderNumberPart = generateRandomNumber();
-        return datePart + orderNumberPart;
-    }
-
-    private String generateRandomNumber() {
-        int number = random.nextInt(10000);
-        return String.format("%04d", number);
     }
 
 }
