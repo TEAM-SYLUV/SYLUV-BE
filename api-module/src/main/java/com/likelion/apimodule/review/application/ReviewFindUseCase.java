@@ -34,7 +34,7 @@ public class ReviewFindUseCase {
     private final OrderQueryService orderQueryService;
     private final JwtUtil jwtUtil;
 
-    public List<ReviewInfo> findAllReviews(String accessToken) {
+    public List<ReviewInfo> findAllReviews(String accessToken, Long menuId) {
 
         String email = jwtUtil.getEmail(accessToken);
         User myUser = userQueryService.findByEmail(email);
@@ -86,9 +86,11 @@ public class ReviewFindUseCase {
 
             boolean isMine = user.getUserId().equals(myUser.getUserId());
             boolean helpfulYn = reviewQueryService.countLikeCountByMine(user.getUserId(), review.getId()) > 0;
+            Integer helpfulCnt = reviewQueryService.countAllLikeCount(review.getId());
 
             ReviewInfo reviewInfo = new ReviewInfo(id, name, picture, rating, content, reviewImages,
-                    likeCount, storeName, menuNameList, hourDifference, dayDifference, weekDifference, isMine, helpfulYn);
+                    likeCount, store.getId(), storeName, menuNameList, hourDifference, dayDifference, weekDifference,
+                    isMine, helpfulYn, helpfulCnt);
             reviewInfos.add(reviewInfo);
         }
 

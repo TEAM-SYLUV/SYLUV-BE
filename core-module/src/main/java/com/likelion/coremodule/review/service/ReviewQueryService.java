@@ -41,6 +41,10 @@ public class ReviewQueryService {
         return reviewLikeRepository.countByReviewId(reviewId);
     }
 
+    public Integer countAllLikeCount(Long reviewId) {
+        return reviewLikeRepository.countAllByReviewId(reviewId);
+    }
+
     public Integer countLikeCountByMine(Long userId, Long reviewId) {
         return reviewLikeRepository.countAllByUserUserIdAndReviewId(userId, reviewId);
     }
@@ -58,7 +62,7 @@ public class ReviewQueryService {
     }
 
     public Integer countReviewLikeAndUserId(Long reviewId, Long userId) {
-        return reviewLikeRepository.countAllByReviewIdAndUserUserId(reviewId, userId);
+        return reviewLikeRepository.countAllByUserUserIdAndReviewId(userId, reviewId);
     }
 
     public void deleteReview(Long id) {
