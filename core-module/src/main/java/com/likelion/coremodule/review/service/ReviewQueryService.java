@@ -57,8 +57,8 @@ public class ReviewQueryService {
         reviewLikeRepository.save(reviewLike);
     }
 
-    public Integer countReviewLike(Long reviewId) {
-        return reviewLikeRepository.countAllByReviewId(reviewId);
+    public Integer countReviewLikeAndUserId(Long reviewId, Long userId) {
+        return reviewLikeRepository.countAllByReviewIdAndUserUserId(reviewId, userId);
     }
 
     public void deleteReview(Long id) {

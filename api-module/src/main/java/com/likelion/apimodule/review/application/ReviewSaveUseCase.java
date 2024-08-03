@@ -74,7 +74,7 @@ public class ReviewSaveUseCase {
         User user = userQueryService.findByEmail(email);
         Review review = reviewQueryService.findReviewById(reviewId);
 
-        if (reviewQueryService.countReviewLike(reviewId) > 0) {
+        if (reviewQueryService.countReviewLikeAndUserId(reviewId, user.getUserId()) > 0) {
             throw new ReviewException(ReviewErrorCode.EXIST_REVIEW_LIKE);
         } else {
             final ReviewLike reviewLike = ReviewLike.builder().user(user).review(review).build();
