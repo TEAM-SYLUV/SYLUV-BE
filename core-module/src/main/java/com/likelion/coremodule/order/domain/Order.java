@@ -22,5 +22,11 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(nullable = false, unique = true)
     private String orderNum;
+
+    private String phoneNum;
+    private Integer visitHour;
+    private Integer visitMin;
+    private String pickUpRoute;
 }

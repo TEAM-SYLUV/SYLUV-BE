@@ -47,15 +47,15 @@ public class PaymentService {
         User user = userQueryService.findByEmail(email);
         Store store = storeQueryService.findStoreById(request.menuIds().get(0));
 
-        String orderNum = generateOrderNumber(LocalDateTime.now());
-
         // 토스 페이 결제 승인
-        TossPaymentResponse tossPaymentResponse = paymentClient.confirmPayment(request, orderNum);
+        TossPaymentResponse tossPaymentResponse = paymentClient.confirmPayment(request);
 
         // 방문 리스트 준비 중으로 저장 + 주문 테이블 저장
         marketQueryService.saveVisitListToPreparing(store.getId(), user.getEmail());
 
-        final Order order = Order.builder().orderNum(orderNum).user(user).build();
+        final Order order = Order.builder().orderNum(request.orderNum()).user(user).
+                phoneNum(request.phoneNum()).pickUpRoute(request.pickUpRoute()).
+                visitHour(request.visitHour()).visitMin(request.visitMin()).build();
         orderQueryService.saveOrder(order);
 
         for (int i = 0; i < request.menuIds().size(); i++) {
