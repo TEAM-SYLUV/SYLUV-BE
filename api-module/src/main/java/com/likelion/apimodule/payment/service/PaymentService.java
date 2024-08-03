@@ -37,6 +37,7 @@ public class PaymentService {
     private final JwtUtil jwtUtil;
 
     private static final DateTimeFormatter ORDER_NUMBER_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static final String ALPHANUMERIC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final SecureRandom random = new SecureRandom();
     private final MenuQueryService menuQueryService;
 
@@ -71,13 +72,17 @@ public class PaymentService {
 
     public String generateOrderNumber(LocalDateTime createdAt) {
         String datePart = createdAt.format(ORDER_NUMBER_DATE_FORMAT);
-        String orderNumberPart = generateRandomNumber();
-        return datePart + orderNumberPart;
+        String randomAlphaNumeric = generateRandomAlphaNumeric();
+        return datePart + randomAlphaNumeric;
     }
 
-    private String generateRandomNumber() {
-        int number = random.nextInt(10000);
-        return String.format("%04d", number);
+    private String generateRandomAlphaNumeric() {
+        StringBuilder alphaNumeric = new StringBuilder(4);
+        for (int i = 0; i < 4; i++) {
+            int index = random.nextInt(ALPHANUMERIC.length());
+            alphaNumeric.append(ALPHANUMERIC.charAt(index));
+        }
+        return alphaNumeric.toString();
     }
 
 }
