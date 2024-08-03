@@ -9,5 +9,7 @@ public record VisitListInfo(Long visitListId,
                             StoreCategory category,
                             String imageUrl,
                             String visitedTime,
+                            String latitude,
+                            String longitude,
                             VisitStatus status) {
 }

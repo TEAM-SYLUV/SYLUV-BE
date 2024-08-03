@@ -9,11 +9,13 @@ public record ReviewInfo(Long reviewId,
                          String content,
                          List<String> image,
                          String likeCount,
+                         Long storeId,
                          String storeName,
                          List<String> menuName,
                          Integer beforeHours,
                          Integer beforeDay,
                          Integer beforeWeek,
                          Boolean isMine,
-                         Boolean helpfulYn) {
+                         Boolean helpfulYn,
+                         Integer helpfulCnt) {
 }

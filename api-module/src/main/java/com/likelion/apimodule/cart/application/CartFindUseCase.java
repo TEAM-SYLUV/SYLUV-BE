@@ -43,6 +43,7 @@ public class CartFindUseCase {
                     cart.getId(),
                     store.getName(),
                     menu.getName(),
+                    menu.getImageUrl(),
                     menu.getPrice(),
                     cart.getQuantity()
             );

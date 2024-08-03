@@ -34,12 +34,18 @@ public class ReviewFindUseCase {
     private final OrderQueryService orderQueryService;
     private final JwtUtil jwtUtil;
 
-    public List<ReviewInfo> findAllReviews(String accessToken) {
+    public List<ReviewInfo> findAllReviews(String accessToken, Long menuId) {
 
         String email = jwtUtil.getEmail(accessToken);
         User myUser = userQueryService.findByEmail(email);
 
-        List<Order> orderList = orderQueryService.findOrderByUserId(myUser.getUserId());
+        List<OrderItem> itemList = orderQueryService.findOrderItemsByMenuId(menuId);
+        List<Order> orderList = new ArrayList<>();
+        for (OrderItem i : itemList) {
+            Order order = orderQueryService.findOrderById(i.getOrder().getId());
+            orderList.add(order);
+        }
+
         List<Review> allReviews = new ArrayList<>();
         for (Order order : orderList) {
             List<Review> itemreviews = reviewQueryService.findAllByOrderId(order.getId());
@@ -86,9 +92,11 @@ public class ReviewFindUseCase {
 
             boolean isMine = user.getUserId().equals(myUser.getUserId());
             boolean helpfulYn = reviewQueryService.countLikeCountByMine(user.getUserId(), review.getId()) > 0;
+            Integer helpfulCnt = reviewQueryService.countAllLikeCount(review.getId());
 
             ReviewInfo reviewInfo = new ReviewInfo(id, name, picture, rating, content, reviewImages,
-                    likeCount, storeName, menuNameList, hourDifference, dayDifference, weekDifference, isMine, helpfulYn);
+                    likeCount, store.getId(), storeName, menuNameList, hourDifference, dayDifference, weekDifference,
+                    isMine, helpfulYn, helpfulCnt);
             reviewInfos.add(reviewInfo);
         }
 
