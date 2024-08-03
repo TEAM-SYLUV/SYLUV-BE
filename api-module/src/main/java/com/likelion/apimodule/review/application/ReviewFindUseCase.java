@@ -39,7 +39,13 @@ public class ReviewFindUseCase {
         String email = jwtUtil.getEmail(accessToken);
         User myUser = userQueryService.findByEmail(email);
 
-        List<Order> orderList = orderQueryService.findOrderByUserId(myUser.getUserId());
+        List<OrderItem> itemList = orderQueryService.findOrderItemsByMenuId(menuId);
+        List<Order> orderList = new ArrayList<>();
+        for (OrderItem i : itemList) {
+            Order order = orderQueryService.findOrderById(i.getOrder().getId());
+            orderList.add(order);
+        }
+
         List<Review> allReviews = new ArrayList<>();
         for (Order order : orderList) {
             List<Review> itemreviews = reviewQueryService.findAllByOrderId(order.getId());
