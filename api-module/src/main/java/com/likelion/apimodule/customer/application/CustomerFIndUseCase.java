@@ -2,6 +2,8 @@ package com.likelion.apimodule.customer.application;
 
 import com.likelion.apimodule.customer.dto.TotalOrder;
 import com.likelion.apimodule.order.dto.MenuOrder;
+import com.likelion.coremodule.VisitList.domain.VisitList;
+import com.likelion.coremodule.VisitList.service.VisitListQueryService;
 import com.likelion.coremodule.customer.service.CustomerQueryService;
 import com.likelion.coremodule.menu.domain.Menu;
 import com.likelion.coremodule.menu.service.MenuQueryService;
@@ -27,6 +29,7 @@ public class CustomerFIndUseCase {
     private final MenuQueryService menuQueryService;
     private final OrderQueryService orderQueryService;
     private final UserQueryService userQueryService;
+    private final VisitListQueryService visitListQueryService;
 
     public List<TotalOrder> getTotalOrder(Long storeId) {
 
@@ -49,6 +52,7 @@ public class CustomerFIndUseCase {
             List<OrderItem> orderItems = entry.getValue();
             Order order = orderQueryService.findOrderById(orderItems.get(0).getOrder().getId());
             User user = userQueryService.findById(order.getUser().getUserId());
+            VisitList visitList = visitListQueryService.findVisitListByStoreIdAndUserId(storeId, user.getUserId());
 
             List<MenuOrder> menuOrders = orderItems.stream()
                     .map(item -> {
@@ -73,6 +77,7 @@ public class CustomerFIndUseCase {
                     order.getVisitHour().toString(),
                     order.getVisitMin().toString(),
                     user.getName(),
+                    visitList.getVisit_status(),
                     order.getCreatedAt(),
                     order.getOrderNum(),
                     menuOrders,

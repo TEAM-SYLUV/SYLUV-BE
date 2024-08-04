@@ -10,10 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -48,6 +45,23 @@ public class CustomerController {
     }
 
     // 접수하는 API (정후)
+    @PostMapping("/{orderId}")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "주문 접숙하기",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "주문 접수 API", description = "주문 접수 API 입니다.")
+    public ApplicationResponse<String> changeToPreparing(
+            @PathVariable Long orderId
+    ) {
+
+        return ApplicationResponse.ok("주문을 접수했습니다.");
+    }
 
     // 준비 완료 시키는 API (정후)
 
