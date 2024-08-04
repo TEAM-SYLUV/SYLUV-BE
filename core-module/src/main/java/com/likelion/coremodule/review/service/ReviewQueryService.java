@@ -37,10 +37,6 @@ public class ReviewQueryService {
         return reviewRepository.findReviewByOrderIdAndUserUserId(orderId, userId);
     }
 
-    public Long findLikeCountByReviewId(Long reviewId) {
-        return reviewLikeRepository.countByReviewId(reviewId);
-    }
-
     public Integer countAllLikeCount(Long reviewId) {
         return reviewLikeRepository.countAllByReviewId(reviewId);
     }

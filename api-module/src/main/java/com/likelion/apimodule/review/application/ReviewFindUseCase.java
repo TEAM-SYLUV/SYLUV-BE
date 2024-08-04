@@ -79,7 +79,7 @@ public class ReviewFindUseCase {
                 reviewImages.add(image.getImageUrl());
             }
 
-            String likeCount = reviewQueryService.findLikeCountByReviewId(review.getId()).toString();
+            String likeCount = reviewQueryService.countReviewLikeAndUserId(user.getUserId(), review.getId()).toString();
 
             Store store = storeQueryService.findStoreById(menus.get(0).getStore().getId());
             String storeName = store.getName();
