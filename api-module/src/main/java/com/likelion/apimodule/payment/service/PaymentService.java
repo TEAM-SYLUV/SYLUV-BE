@@ -1,8 +1,6 @@
 package com.likelion.apimodule.payment.service;
 
 import com.likelion.apimodule.payment.dto.request.ApprovalRequest;
-import com.likelion.apimodule.payment.dto.response.ApprovalResponse;
-import com.likelion.apimodule.payment.dto.response.TossPaymentResponse;
 import com.likelion.apimodule.security.util.JwtUtil;
 import com.likelion.coremodule.market.service.MarketQueryService;
 import com.likelion.coremodule.menu.domain.Menu;
@@ -29,7 +27,6 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 public class PaymentService {
 
-    private final PaymentClient paymentClient;
     private final OrderQueryService orderQueryService;
     private final StoreQueryService storeQueryService;
     private final MarketQueryService marketQueryService;
@@ -41,17 +38,17 @@ public class PaymentService {
     private static final SecureRandom random = new SecureRandom();
     private final MenuQueryService menuQueryService;
 
-    public ApprovalResponse approval(String accessToken, ApprovalRequest request) {
+    public void approval(String accessToken, ApprovalRequest request) {
 
         String email = jwtUtil.getEmail(accessToken);
         User user = userQueryService.findByEmail(email);
         Store store = storeQueryService.findStoreById(request.menuIds().get(0));
 
         // 토스 페이 결제 승인
-        TossPaymentResponse tossPaymentResponse = paymentClient.confirmPayment(request);
+//        TossPaymentResponse tossPaymentResponse = paymentClient.confirmPayment(request);
 
-        // 방문 리스트 준비 중으로 저장 + 주문 테이블 저장
-        marketQueryService.saveVisitListToPreparing(store.getId(), user.getEmail());
+        // 방문 리스트 결제 완료로 저장 + 주문 테이블 저장
+        marketQueryService.saveVisitListToPayment(store.getId(), user.getEmail());
 
         final Order order = Order.builder().orderNum(request.orderNum()).user(user).
                 phoneNum(request.phoneNum()).pickUpRoute(request.pickUpRoute()).
@@ -66,8 +63,6 @@ public class PaymentService {
             final OrderItem orderItem = OrderItem.builder().order(order).menu(menu).quantity(request.amount()).build();
             orderQueryService.saveOrderItem(orderItem);
         }
-
-        return ApprovalResponse.of(tossPaymentResponse);
     }
 
     public String generateOrderNumber(LocalDateTime createdAt) {

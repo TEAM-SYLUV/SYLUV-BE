@@ -5,7 +5,6 @@ import com.likelion.apimodule.order.application.OrderFindUseCase;
 import com.likelion.apimodule.order.dto.OrderDetail;
 import com.likelion.apimodule.order.dto.OrderInfo;
 import com.likelion.apimodule.payment.dto.request.ApprovalRequest;
-import com.likelion.apimodule.payment.dto.response.ApprovalResponse;
 import com.likelion.apimodule.payment.service.PaymentService;
 import com.likelion.commonmodule.exception.common.ApplicationResponse;
 import com.likelion.commonmodule.security.util.AuthConsts;
@@ -104,13 +103,13 @@ public class OrderController {
             }
     )
     @Operation(summary = "주문하기(방문리스트 준비중 추가) + 토스 결제 API", description = "주문하기(방문리스트 준비중 추가) + 토스 결제 API 입니다.")
-    public ApplicationResponse<ApprovalResponse> tossPayment(
+    public ApplicationResponse<String> tossPayment(
             @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken,
             @RequestBody ApprovalRequest request
     ) {
 
-        final ApprovalResponse approval = paymentService.approval(accessToken, request);
-        return ApplicationResponse.ok(approval);
+        paymentService.approval(accessToken, request);
+        return ApplicationResponse.ok("주문 완료");
     }
 
     // 주문 삭제
