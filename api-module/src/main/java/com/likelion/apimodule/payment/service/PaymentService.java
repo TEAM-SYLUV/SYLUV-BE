@@ -2,6 +2,7 @@ package com.likelion.apimodule.payment.service;
 
 import com.likelion.apimodule.payment.dto.request.ApprovalRequest;
 import com.likelion.apimodule.security.util.JwtUtil;
+import com.likelion.coremodule.cart.service.CartQueryService;
 import com.likelion.coremodule.market.service.MarketQueryService;
 import com.likelion.coremodule.menu.domain.Menu;
 import com.likelion.coremodule.menu.service.MenuQueryService;
@@ -20,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -37,12 +40,22 @@ public class PaymentService {
     private static final String ALPHANUMERIC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final SecureRandom random = new SecureRandom();
     private final MenuQueryService menuQueryService;
+    private final CartQueryService cartQueryService;
 
     public void approval(String accessToken, ApprovalRequest request) {
 
         String email = jwtUtil.getEmail(accessToken);
         User user = userQueryService.findByEmail(email);
-        Store store = storeQueryService.findStoreById(request.menuIds().get(0));
+
+        List<Menu> menuList = new ArrayList<>();
+        for (Long id : request.cartIds()) {
+            Menu menu = menuQueryService.findMenuById(id);
+            menuList.add(menu);
+
+            cartQueryService.deleteCartByUserIdAndCartId(user.getUserId(), id);
+        }
+
+        Store store = storeQueryService.findStoreById(menuList.get(0).getId());
 
         // 토스 페이 결제 승인
 //        TossPaymentResponse tossPaymentResponse = paymentClient.confirmPayment(request);
@@ -55,9 +68,9 @@ public class PaymentService {
                 visitHour(request.visitHour()).visitMin(request.visitMin()).build();
         orderQueryService.saveOrder(order);
 
-        for (int i = 0; i < request.menuIds().size(); i++) {
+        for (Menu value : menuList) {
 
-            Long m = request.menuIds().get(i);
+            Long m = value.getId();
             Menu menu = menuQueryService.findMenuById(m);
 
             final OrderItem orderItem = OrderItem.builder().order(order).menu(menu).quantity(request.amount()).build();
