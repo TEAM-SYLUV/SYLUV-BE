@@ -19,6 +19,10 @@ public class MenuQueryService {
         return menuRepository.findAll();
     }
 
+    public void saveMenu(Menu menu) {
+        menuRepository.save(menu);
+    }
+
     public Menu findMenuById(Long menuId) {
         return menuRepository.findById(menuId).orElseThrow(() -> new MenuException(MenuErrorCode.NO_MENU_INFO));
     }

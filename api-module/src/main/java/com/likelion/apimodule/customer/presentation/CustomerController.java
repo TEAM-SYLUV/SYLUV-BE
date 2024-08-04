@@ -2,6 +2,7 @@ package com.likelion.apimodule.customer.presentation;
 
 import com.likelion.apimodule.customer.application.CustomerFIndUseCase;
 import com.likelion.apimodule.customer.application.CustomerSaveUseCase;
+import com.likelion.apimodule.customer.dto.AddMenu;
 import com.likelion.apimodule.customer.dto.TotalOrder;
 import com.likelion.commonmodule.exception.common.ApplicationResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -86,6 +88,25 @@ public class CustomerController {
         return ApplicationResponse.ok("주문을 준비 완료했습니다.");
     }
 
-    
     // 메뉴 추가 API (소연)
+    @PostMapping("/{storeId}/addmenu")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "메뉴 추가 완료",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "메뉴 추가 완료 API", description = "메뉴 추가 완료 API 입니다.")
+    public ApplicationResponse<String> addMenuInfo(
+            @PathVariable Long storeId,
+            @RequestPart(value = "dto") AddMenu addMenu,
+            @RequestPart(value = "file") MultipartFile multipartFile) {
+
+        customerSaveUseCase.addMenuInfo(storeId, addMenu, multipartFile);
+        return ApplicationResponse.ok("메뉴 추가가 완료 되었습니다.");
+    }
+
 }
