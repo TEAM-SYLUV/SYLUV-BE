@@ -8,9 +8,11 @@ import com.likelion.coremodule.user.application.UserQueryService;
 import com.likelion.coremodule.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CustomerSaveUseCase {
 
     private final VisitListQueryService visitListQueryService;
