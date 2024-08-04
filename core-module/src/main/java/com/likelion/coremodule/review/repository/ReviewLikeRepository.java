@@ -8,4 +8,7 @@ public interface ReviewLikeRepository extends JpaRepository<ReviewLike, Long> {
     Integer countAllByUserUserIdAndReviewId(Long userId, Long reviewId);
 
     Integer countAllByReviewId(Long reviewId);
+
+    ReviewLike findReviewLikeByReviewIdAndUserUserId(Long reviewId, Long userId);
+
 }
