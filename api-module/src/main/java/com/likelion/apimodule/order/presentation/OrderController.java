@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,24 @@ public class OrderController {
     private final OrderFindUseCase orderFindUseCase;
     private final PaymentService paymentService;
     private final OrderDeleteUseCase orderDeleteUseCase;
+
+    // 주문번호 생성
+    @GetMapping("/generatenum")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "주문번호 생성",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "주문번호 생성 API", description = "주문번호 생성 API 입니다.")
+    public ApplicationResponse<String> makeOrderNum() {
+
+        String orderNum = paymentService.generateOrderNumber(LocalDateTime.now());
+        return ApplicationResponse.ok(orderNum);
+    }
 
     // 주문내역 조회
     @GetMapping

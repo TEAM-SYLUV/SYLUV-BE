@@ -37,6 +37,7 @@ public class PaymentService {
     private final JwtUtil jwtUtil;
 
     private static final DateTimeFormatter ORDER_NUMBER_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static final String ALPHANUMERIC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final SecureRandom random = new SecureRandom();
     private final MenuQueryService menuQueryService;
 
@@ -46,15 +47,15 @@ public class PaymentService {
         User user = userQueryService.findByEmail(email);
         Store store = storeQueryService.findStoreById(request.menuIds().get(0));
 
-        String orderNum = generateOrderNumber(LocalDateTime.now());
-
         // 토스 페이 결제 승인
-        TossPaymentResponse tossPaymentResponse = paymentClient.confirmPayment(request, orderNum);
+        TossPaymentResponse tossPaymentResponse = paymentClient.confirmPayment(request);
 
         // 방문 리스트 준비 중으로 저장 + 주문 테이블 저장
         marketQueryService.saveVisitListToPreparing(store.getId(), user.getEmail());
 
-        final Order order = Order.builder().orderNum(orderNum).user(user).build();
+        final Order order = Order.builder().orderNum(request.orderNum()).user(user).
+                phoneNum(request.phoneNum()).pickUpRoute(request.pickUpRoute()).
+                visitHour(request.visitHour()).visitMin(request.visitMin()).build();
         orderQueryService.saveOrder(order);
 
         for (int i = 0; i < request.menuIds().size(); i++) {
@@ -71,13 +72,17 @@ public class PaymentService {
 
     public String generateOrderNumber(LocalDateTime createdAt) {
         String datePart = createdAt.format(ORDER_NUMBER_DATE_FORMAT);
-        String orderNumberPart = generateRandomNumber();
-        return datePart + orderNumberPart;
+        String randomAlphaNumeric = generateRandomAlphaNumeric();
+        return datePart + randomAlphaNumeric;
     }
 
-    private String generateRandomNumber() {
-        int number = random.nextInt(10000);
-        return String.format("%04d", number);
+    private String generateRandomAlphaNumeric() {
+        StringBuilder alphaNumeric = new StringBuilder(4);
+        for (int i = 0; i < 4; i++) {
+            int index = random.nextInt(ALPHANUMERIC.length());
+            alphaNumeric.append(ALPHANUMERIC.charAt(index));
+        }
+        return alphaNumeric.toString();
     }
 
 }

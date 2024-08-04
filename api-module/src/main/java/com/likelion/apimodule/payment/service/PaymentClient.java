@@ -32,11 +32,11 @@ public class PaymentClient {
 
     }
 
-    public TossPaymentResponse confirmPayment(ApprovalRequest request, String orderNum) {
+    public TossPaymentResponse confirmPayment(ApprovalRequest request) {
 
         ApproveFinalReq finalReq = new ApproveFinalReq(
                 request.amount(),
-                orderNum,
+                request.orderNum(),
                 request.paymentKey()
         );
 

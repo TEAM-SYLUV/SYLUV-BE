@@ -79,7 +79,7 @@ public class ReviewFindUseCase {
                 reviewImages.add(image.getImageUrl());
             }
 
-            String likeCount = reviewQueryService.findLikeCountByReviewId(review.getId()).toString();
+            String likeCount = reviewQueryService.countReviewLikeAndUserId(user.getUserId(), review.getId()).toString();
 
             Store store = storeQueryService.findStoreById(menus.get(0).getStore().getId());
             String storeName = store.getName();
@@ -91,7 +91,7 @@ public class ReviewFindUseCase {
             Integer weekDifference = dayDifference / 7;
 
             boolean isMine = user.getUserId().equals(myUser.getUserId());
-            boolean helpfulYn = reviewQueryService.countLikeCountByMine(user.getUserId(), review.getId()) > 0;
+            boolean helpfulYn = reviewQueryService.countLikeCountByMine(myUser.getUserId(), review.getId()) > 0;
             Integer helpfulCnt = reviewQueryService.countAllLikeCount(review.getId());
 
             ReviewInfo reviewInfo = new ReviewInfo(id, name, picture, rating, content, reviewImages,
