@@ -45,7 +45,7 @@ public class CustomerController {
     }
 
     // 접수하는 API (정후)
-    @PostMapping("/{orderId}")
+    @PostMapping("/{storeId}/{orderId}")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -57,15 +57,34 @@ public class CustomerController {
     )
     @Operation(summary = "주문 접수 API", description = "주문 접수 API 입니다.")
     public ApplicationResponse<String> changeToPreparing(
+            @PathVariable Long storeId,
             @PathVariable Long orderId
     ) {
 
+        customerSaveUseCase.changeToPreparing(storeId, orderId);
         return ApplicationResponse.ok("주문을 접수했습니다.");
     }
 
     // 준비 완료 시키는 API (정후)
+    @PostMapping("/{storeId}/{orderId}")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "주문 접숙하기",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "주문 접수 API", description = "주문 접수 API 입니다.")
+    public ApplicationResponse<String> changeToPrepared(
+            @PathVariable Long storeId,
+            @PathVariable Long orderId
+    ) {
 
-    // 메뉴 조회 API (소연)
+        customerSaveUseCase.changeToPrepared(storeId, orderId);
+        return ApplicationResponse.ok("주문을 접수했습니다.");
+    }
 
     // 메뉴 추가 API (소연)
 }
