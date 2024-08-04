@@ -2,6 +2,7 @@ package com.likelion.apimodule.payment.service;
 
 import com.likelion.apimodule.payment.dto.request.ApprovalRequest;
 import com.likelion.apimodule.security.util.JwtUtil;
+import com.likelion.coremodule.cart.domain.Cart;
 import com.likelion.coremodule.cart.service.CartQueryService;
 import com.likelion.coremodule.market.service.MarketQueryService;
 import com.likelion.coremodule.menu.domain.Menu;
@@ -49,7 +50,8 @@ public class PaymentService {
 
         List<Menu> menuList = new ArrayList<>();
         for (Long id : request.cartIds()) {
-            Menu menu = menuQueryService.findMenuById(id);
+            Cart cart = cartQueryService.findCartById(id);
+            Menu menu = menuQueryService.findMenuById(cart.getMenu().getId());
             menuList.add(menu);
 
             cartQueryService.deleteCartByUserIdAndCartId(user.getUserId(), id);
