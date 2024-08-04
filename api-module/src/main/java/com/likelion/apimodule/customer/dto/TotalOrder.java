@@ -1,0 +1,18 @@
+package com.likelion.apimodule.customer.dto;
+
+import com.likelion.apimodule.order.dto.MenuOrder;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+public record TotalOrder(
+        String pickUpRoute,
+        String visitHour,
+        String visitMin,
+        String userName,
+        LocalDateTime createdAt,
+        String orderNum,
+        List<MenuOrder> menu,
+        Integer totalPrice
+) {
+}

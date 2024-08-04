@@ -2,7 +2,6 @@ package com.likelion.coremodule.order.domain;
 
 import com.likelion.commonmodule.exception.common.BaseEntity;
 import com.likelion.coremodule.menu.domain.Menu;
-import com.likelion.coremodule.order.domain.Order;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +21,7 @@ public class OrderItem extends BaseEntity {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "menu_id")
     private Menu menu;
 

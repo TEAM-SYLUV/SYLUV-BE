@@ -39,7 +39,7 @@ public class CartSaveUseCase {
         if (findMyCartCount(user.getUserId(), menu.getId()) >= 1) {
 
             Cart cart = cartQueryService.findCartByUserIdAndMenuId(user.getUserId(), menu.getId());
-            cart.setCartQuantity(saveReq.quantity());
+            cart.setCartQuantity(saveReq.quantity() + cart.getQuantity());
 
             return "추가";
         } else {
