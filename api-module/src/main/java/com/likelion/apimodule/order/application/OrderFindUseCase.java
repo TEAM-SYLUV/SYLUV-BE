@@ -98,7 +98,6 @@ public class OrderFindUseCase {
         List<OrderItem> items = orderQueryService.findOrderItemByOrderId(orderId);
         Menu menu = menuQueryService.findMenuById(items.get(0).getMenu().getId());
         Store store = storeQueryService.findStoreById(menu.getStore().getId());
-//        Market market = marketQueryService.findMarket(store.getMarket().getId());
 
         List<MenuOrder> menuOrders = new ArrayList<>();
         boolean reviewYn = reviewQueryService.findReviewByOrderAndUser(order.getId(), user.getUserId()) != null;
@@ -113,7 +112,7 @@ public class OrderFindUseCase {
                     singleMenu.getName(),
                     singleMenu.getImageUrl(),
                     o.getQuantity(),
-                    singleMenu.getPrice()
+                    singleMenu.getPrice() * o.getQuantity()
             );
             menuOrders.add(menuOrder);
         }
