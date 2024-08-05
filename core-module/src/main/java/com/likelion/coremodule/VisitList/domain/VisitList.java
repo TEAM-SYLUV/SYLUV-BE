@@ -30,6 +30,8 @@ public class VisitList extends BaseEntity {
 
     private LocalDate visitedDate;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "visit_status", nullable = false)
     private VisitStatus visit_status;
 
     public void updateToPayment() {
@@ -37,14 +39,23 @@ public class VisitList extends BaseEntity {
     }
 
     public void updateToPreparing() {
+        if (this.visit_status != VisitStatus.PAYMENT) {
+            throw new IllegalStateException("Visit can only be updated to PREPARING from PAYMENT status");
+        }
         this.visit_status = VisitStatus.PREPARING;
     }
 
     public void updateToPrepared() {
+        if (this.visit_status != VisitStatus.PREPARING) {
+            throw new IllegalStateException("Visit can only be updated to PREPARED from PREPARING status");
+        }
         this.visit_status = VisitStatus.PREPARED;
     }
 
     public void updateToVisited() {
+        if (this.visit_status != VisitStatus.PREPARED) {
+            throw new IllegalStateException("Visit can only be updated to VISITED from PREPARED status");
+        }
         this.visit_status = VisitStatus.VISITED;
     }
 }

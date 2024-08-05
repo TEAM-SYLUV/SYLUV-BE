@@ -72,7 +72,7 @@ public class OrderFindUseCase {
 
             OrderInfo orderInfo = new OrderInfo(
                     order.getId(),
-                    "결제 확인 대기",
+                    "결제 확인 완료",
                     market.getName(),
                     store.getName(),
                     store.getImageUrl(),

@@ -160,7 +160,7 @@ public class MarketController {
                                                        @PathVariable Long visitlistId) {
 
         visitListSaveUseCase.updateToVisited(accessToken, visitlistId);
-        return ApplicationResponse.ok("준비 완료로 변경했습니다.");
+        return ApplicationResponse.ok("방문 완료로 변경했습니다.");
     }
 
     // 방문 리스트 삭제
