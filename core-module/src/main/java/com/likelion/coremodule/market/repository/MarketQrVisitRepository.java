@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MarketQrVisitRepository extends JpaRepository<MarketQrVisit, Long> {
 
-    MarketQrVisit findByMarketId(Long marketId);
+    MarketQrVisit findByMarketIdAAndUserUserId(Long marketId, Long userId);
 
     Integer countAllByMarketIdAndUserUserId(Long marketId, Long userId);
 }
