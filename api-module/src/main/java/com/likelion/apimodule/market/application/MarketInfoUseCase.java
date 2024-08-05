@@ -151,6 +151,7 @@ public class MarketInfoUseCase {
 
                         return new VisitListInfo(
                                 id,
+                                store.getMarket().getId(),
                                 store.getId(),
                                 store.getName(),
                                 store.getCategory(),

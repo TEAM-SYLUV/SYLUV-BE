@@ -4,6 +4,7 @@ import com.likelion.coremodule.VisitList.domain.VisitStatus;
 import com.likelion.coremodule.store.domain.StoreCategory;
 
 public record VisitListInfo(Long visitListId,
+                            Long marketId,
                             Long storeId,
                             String store,
                             StoreCategory category,

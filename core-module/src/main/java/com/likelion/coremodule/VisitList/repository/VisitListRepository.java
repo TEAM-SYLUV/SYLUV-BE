@@ -13,4 +13,6 @@ public interface VisitListRepository extends JpaRepository<VisitList, Long> {
     List<VisitList> findVisitListsByUserUserId(Long userId);
 
     VisitList findVisitListByStoreIdAndUserUserId(Long storeId, Long userId);
+
+    Integer countVisitListsByStoreIdAndUserUserId(Long storeId, Long userId);
 }
