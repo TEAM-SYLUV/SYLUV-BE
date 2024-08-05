@@ -74,15 +74,16 @@ public class HomeFindUseCase {
                 visitListHomeList.add(visitListHome);
             }
 
-            MarketQrVisit marketQrVisit = marketQueryService.findMarketVisit(market.getId());
-            int qrVisit = (marketQrVisit != null) ? marketQrVisit.getQrVisit() : 0;
+            List<MarketQrVisit> marketQrVisit = marketQueryService.findMarketVisit(market.getId());
+            int qrVisitTotal = marketQrVisit.stream().mapToInt(MarketQrVisit::getQrVisit).sum();
+
 
             HotListHome hotListHome = new HotListHome(
                     market.getId(),
                     market.getName(),
                     market.getImageUrl(),
                     market.getLocation(),
-                    qrVisit
+                    qrVisitTotal
             );
             hotListHomeList.add(hotListHome);
         }
@@ -90,7 +91,7 @@ public class HomeFindUseCase {
         // VisitListHome 리스트를 날짜 기준으로 정렬
         visitListHomeList.sort(Comparator.comparing(VisitListHome::visitDate));
         // HotListHome 리스트를 qrVisit 순으로 정렬
-        hotListHomeList.sort(Comparator.comparingInt(HotListHome::totalQrVisit));
+        hotListHomeList.sort(Comparator.comparingInt(HotListHome::totalQrVisit).reversed());
 
         return new HomeInfo(visitListHomeList, hotListHomeList);
     }

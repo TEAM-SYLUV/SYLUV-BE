@@ -72,7 +72,7 @@ public class OrderFindUseCase {
 
             OrderInfo orderInfo = new OrderInfo(
                     order.getId(),
-                    "결제 확인 대기",
+                    "결제 확인 완료",
                     market.getName(),
                     store.getName(),
                     store.getImageUrl(),
@@ -98,16 +98,15 @@ public class OrderFindUseCase {
         List<OrderItem> items = orderQueryService.findOrderItemByOrderId(orderId);
         Menu menu = menuQueryService.findMenuById(items.get(0).getMenu().getId());
         Store store = storeQueryService.findStoreById(menu.getStore().getId());
-//        Market market = marketQueryService.findMarket(store.getMarket().getId());
 
         List<MenuOrder> menuOrders = new ArrayList<>();
         boolean reviewYn = reviewQueryService.findReviewByOrderAndUser(order.getId(), user.getUserId()) != null;
 
-        Integer price = 0;
+        int price = 0;
         for (OrderItem o : items) {
 
             Menu singleMenu = menuQueryService.findMenuById(o.getMenu().getId());
-            price += singleMenu.getPrice();
+            price += singleMenu.getPrice() * o.getQuantity();
 
             MenuOrder menuOrder = new MenuOrder(
                     singleMenu.getName(),

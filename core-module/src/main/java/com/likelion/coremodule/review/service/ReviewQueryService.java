@@ -66,8 +66,9 @@ public class ReviewQueryService {
     }
 
     public void deleteReview(Long id) {
+        reviewImageRepository.deleteReviewImageByReviewId(id);
+        reviewLikeRepository.deleteReviewLikeByReviewId(id);
         reviewRepository.deleteById(id);
-
     }
 
     public void deleteReviewLike(Long id) {

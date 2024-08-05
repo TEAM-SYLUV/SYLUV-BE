@@ -79,6 +79,7 @@ public class CustomerFIndUseCase {
                     user.getName(),
                     visitList.getVisit_status(),
                     order.getCreatedAt(),
+                    order.getId(),
                     order.getOrderNum(),
                     menuOrders,
                     totalPrice
