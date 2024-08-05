@@ -17,7 +17,7 @@ public class HomeQueryService {
 
     public void updateQrVisit(User user, Market market) {
 
-        MarketQrVisit marketQrVisit = marketQrVisitRepository.findByMarketIdAAndUserUserId(market.getId(), user.getUserId());
+        MarketQrVisit marketQrVisit = marketQrVisitRepository.findByMarketIdAndUserUserId(market.getId(), user.getUserId());
 
         if (marketQrVisit != null) {
             marketQrVisit.updateQrVisit();

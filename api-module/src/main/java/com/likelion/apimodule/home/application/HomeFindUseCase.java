@@ -74,15 +74,16 @@ public class HomeFindUseCase {
                 visitListHomeList.add(visitListHome);
             }
 
-            MarketQrVisit marketQrVisit = marketQueryService.findMarketVisit(market.getId());
-            int qrVisit = (marketQrVisit != null) ? marketQrVisit.getQrVisit() : 0;
+            List<MarketQrVisit> marketQrVisit = marketQueryService.findMarketVisit(market.getId());
+            int qrVisitTotal = marketQrVisit.stream().mapToInt(MarketQrVisit::getQrVisit).sum();
+
 
             HotListHome hotListHome = new HotListHome(
                     market.getId(),
                     market.getName(),
                     market.getImageUrl(),
                     market.getLocation(),
-                    qrVisit
+                    qrVisitTotal
             );
             hotListHomeList.add(hotListHome);
         }

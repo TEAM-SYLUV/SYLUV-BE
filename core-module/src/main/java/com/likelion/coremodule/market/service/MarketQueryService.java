@@ -42,8 +42,8 @@ public class MarketQueryService {
         return marketRepository.findById(id).orElseThrow(() -> new MarketException(MarketErrorCode.NO_MARKET_INFO));
     }
 
-    public MarketQrVisit findMarketVisit(Long marketId) {
-        return marketQrVisitRepository.findByMarketId(marketId);
+    public List<MarketQrVisit> findMarketVisit(Long marketId) {
+        return marketQrVisitRepository.findMarketQrVisitsByMarketId(marketId);
     }
 
     public Integer findMyMarketVisit(Long marketId, Long userId) {
