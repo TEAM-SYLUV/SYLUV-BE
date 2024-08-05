@@ -2,5 +2,5 @@ package com.likelion.coremodule.VisitList.domain;
 
 public enum VisitStatus {
 
-    BEFORE, PREPARING, PREPARED, VISITED
+    BEFORE, PAYMENT, PREPARING, PREPARED, VISITED
 }

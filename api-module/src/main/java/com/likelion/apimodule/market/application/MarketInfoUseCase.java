@@ -94,6 +94,8 @@ public class MarketInfoUseCase {
                                 store.getCategory(),
                                 store.getImageUrl(),
                                 formattedTime,
+                                store.getXloc(),
+                                store.getYloc(),
                                 visitList.getVisit_status()
                         );
                     })
@@ -154,6 +156,8 @@ public class MarketInfoUseCase {
                                 store.getCategory(),
                                 store.getImageUrl(),
                                 formattedTime,
+                                store.getXloc(),
+                                store.getYloc(),
                                 visitList.getVisit_status()
                         );
                     })

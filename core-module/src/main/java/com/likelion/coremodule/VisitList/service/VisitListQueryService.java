@@ -26,4 +26,8 @@ public class VisitListQueryService {
     public List<VisitList> findVisitListsByUserId(Long userId) {
         return visitListRepository.findVisitListsByUserUserId(userId);
     }
+
+    public VisitList findVisitListByStoreIdAndUserId(Long storeId, Long userId) {
+        return visitListRepository.findVisitListByStoreIdAndUserUserId(storeId, userId);
+    }
 }

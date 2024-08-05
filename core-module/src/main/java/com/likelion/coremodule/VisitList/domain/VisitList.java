@@ -32,6 +32,10 @@ public class VisitList extends BaseEntity {
 
     private VisitStatus visit_status;
 
+    public void updateToPayment() {
+        this.visit_status = VisitStatus.PAYMENT;
+    }
+
     public void updateToPreparing() {
         this.visit_status = VisitStatus.PREPARING;
     }

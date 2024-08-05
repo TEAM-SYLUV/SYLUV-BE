@@ -1,9 +1,9 @@
 package com.likelion.apimodule.payment.service;
 
 import com.likelion.apimodule.payment.dto.request.ApprovalRequest;
-import com.likelion.apimodule.payment.dto.response.ApprovalResponse;
-import com.likelion.apimodule.payment.dto.response.TossPaymentResponse;
 import com.likelion.apimodule.security.util.JwtUtil;
+import com.likelion.coremodule.cart.domain.Cart;
+import com.likelion.coremodule.cart.service.CartQueryService;
 import com.likelion.coremodule.market.service.MarketQueryService;
 import com.likelion.coremodule.menu.domain.Menu;
 import com.likelion.coremodule.menu.service.MenuQueryService;
@@ -22,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -29,7 +31,6 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 public class PaymentService {
 
-    private final PaymentClient paymentClient;
     private final OrderQueryService orderQueryService;
     private final StoreQueryService storeQueryService;
     private final MarketQueryService marketQueryService;
@@ -37,47 +38,61 @@ public class PaymentService {
     private final JwtUtil jwtUtil;
 
     private static final DateTimeFormatter ORDER_NUMBER_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static final String ALPHANUMERIC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final SecureRandom random = new SecureRandom();
     private final MenuQueryService menuQueryService;
+    private final CartQueryService cartQueryService;
 
-    public ApprovalResponse approval(String accessToken, ApprovalRequest request) {
+    public void approval(String accessToken, ApprovalRequest request) {
 
         String email = jwtUtil.getEmail(accessToken);
         User user = userQueryService.findByEmail(email);
-        Store store = storeQueryService.findStoreById(request.menuIds().get(0));
 
-        String orderNum = generateOrderNumber(LocalDateTime.now());
+        List<Menu> menuList = new ArrayList<>();
+        for (Long id : request.cartIds()) {
+            Cart cart = cartQueryService.findCartById(id);
+            Menu menu = menuQueryService.findMenuById(cart.getMenu().getId());
+            menuList.add(menu);
+
+            cartQueryService.deleteCartByUserIdAndCartId(user.getUserId(), id);
+        }
+
+        Store store = storeQueryService.findStoreById(menuList.get(0).getId());
 
         // 토스 페이 결제 승인
-        TossPaymentResponse tossPaymentResponse = paymentClient.confirmPayment(request, orderNum);
+//        TossPaymentResponse tossPaymentResponse = paymentClient.confirmPayment(request);
 
-        // 방문 리스트 준비 중으로 저장 + 주문 테이블 저장
-        marketQueryService.saveVisitListToPreparing(store.getId(), user.getEmail());
+        // 방문 리스트 결제 완료로 저장 + 주문 테이블 저장
+        marketQueryService.saveVisitListToPayment(store.getId(), user.getEmail());
 
-        final Order order = Order.builder().orderNum(orderNum).user(user).build();
+        final Order order = Order.builder().orderNum(request.orderNum()).user(user).
+                phoneNum(request.phoneNum()).pickUpRoute(request.pickUpRoute()).
+                visitHour(request.visitHour()).visitMin(request.visitMin()).build();
         orderQueryService.saveOrder(order);
 
-        for (int i = 0; i < request.menuIds().size(); i++) {
+        for (Menu value : menuList) {
 
-            Long m = request.menuIds().get(i);
+            Long m = value.getId();
             Menu menu = menuQueryService.findMenuById(m);
 
             final OrderItem orderItem = OrderItem.builder().order(order).menu(menu).quantity(request.amount()).build();
             orderQueryService.saveOrderItem(orderItem);
         }
-
-        return ApprovalResponse.of(tossPaymentResponse);
     }
 
     public String generateOrderNumber(LocalDateTime createdAt) {
         String datePart = createdAt.format(ORDER_NUMBER_DATE_FORMAT);
-        String orderNumberPart = generateRandomNumber();
-        return datePart + orderNumberPart;
+        String randomAlphaNumeric = generateRandomAlphaNumeric();
+        return datePart + randomAlphaNumeric;
     }
 
-    private String generateRandomNumber() {
-        int number = random.nextInt(10000);
-        return String.format("%04d", number);
+    private String generateRandomAlphaNumeric() {
+        StringBuilder alphaNumeric = new StringBuilder(4);
+        for (int i = 0; i < 4; i++) {
+            int index = random.nextInt(ALPHANUMERIC.length());
+            alphaNumeric.append(ALPHANUMERIC.charAt(index));
+        }
+        return alphaNumeric.toString();
     }
 
 }

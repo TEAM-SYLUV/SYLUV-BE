@@ -25,6 +25,10 @@ public class ReviewQueryService {
         return reviewRepository.findById(id).orElseThrow(() -> new ReviewException(ReviewErrorCode.NO_MENU_INFO));
     }
 
+    public ReviewLike findReviewLike(Long reviewId, Long userId) {
+        return reviewLikeRepository.findReviewLikeByReviewIdAndUserUserId(reviewId, userId);
+    }
+
     public List<ReviewImage> findImagesByReviewId(Long reviewId) {
         return reviewImageRepository.findAllByReviewId(reviewId);
     }
@@ -37,8 +41,8 @@ public class ReviewQueryService {
         return reviewRepository.findReviewByOrderIdAndUserUserId(orderId, userId);
     }
 
-    public Long findLikeCountByReviewId(Long reviewId) {
-        return reviewLikeRepository.countByReviewId(reviewId);
+    public Integer countAllLikeCount(Long reviewId) {
+        return reviewLikeRepository.countAllByReviewId(reviewId);
     }
 
     public Integer countLikeCountByMine(Long userId, Long reviewId) {
@@ -57,11 +61,16 @@ public class ReviewQueryService {
         reviewLikeRepository.save(reviewLike);
     }
 
-    public Integer countReviewLike(Long reviewId) {
-        return reviewLikeRepository.countAllByReviewId(reviewId);
+    public Integer countReviewLikeAndUserId(Long reviewId, Long userId) {
+        return reviewLikeRepository.countAllByUserUserIdAndReviewId(userId, reviewId);
     }
 
     public void deleteReview(Long id) {
         reviewRepository.deleteById(id);
+
+    }
+
+    public void deleteReviewLike(Long id) {
+        reviewLikeRepository.deleteById(id);
     }
 }

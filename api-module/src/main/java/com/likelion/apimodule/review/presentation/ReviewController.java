@@ -28,7 +28,7 @@ public class ReviewController {
     private final ReviewSaveUseCase reviewSaveUseCase;
 
     // 리뷰 조회
-    @GetMapping
+    @GetMapping("/{menuId}")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -40,10 +40,11 @@ public class ReviewController {
     )
     @Operation(summary = "전체 리뷰 확인 API", description = "전체 리뷰 확인 API 입니다.")
     public ApplicationResponse<List<ReviewInfo>> getReviewInfo(
-            @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken
+            @RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken,
+            @PathVariable Long menuId
     ) {
 
-        List<ReviewInfo> infos = reviewFindUseCase.findAllReviews(accessToken);
+        List<ReviewInfo> infos = reviewFindUseCase.findAllReviews(accessToken, menuId);
         return ApplicationResponse.ok(infos);
     }
 
@@ -103,5 +104,23 @@ public class ReviewController {
 
         reviewSaveUseCase.saveReviewLike(reviewId, accessToken);
         return ApplicationResponse.ok("도움이 돼요 저장 완료");
+    }
+
+    @DeleteMapping ("/{reviewId}/like/delete")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "도움이 돼요 저장 성공",
+                            useReturnTypeSchema = true
+                    )
+            }
+    )
+    @Operation(summary = "도움이 돼요 삭제 API", description = "도움이 돼요 삭제 API 입니다.")
+    public ApplicationResponse<String> deleteReviewLike(@RequestHeader(AuthConsts.ACCESS_TOKEN_HEADER) String accessToken,
+                                                      @PathVariable Long reviewId) {
+
+        reviewSaveUseCase.deleteReviewLike(accessToken, reviewId);
+        return ApplicationResponse.ok("도움이 돼요 삭제 완료");
     }
 }

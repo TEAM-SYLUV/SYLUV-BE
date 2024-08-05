@@ -74,12 +74,24 @@ public class ReviewSaveUseCase {
         User user = userQueryService.findByEmail(email);
         Review review = reviewQueryService.findReviewById(reviewId);
 
-        if (reviewQueryService.countReviewLike(reviewId) > 0) {
+        if (reviewQueryService.countReviewLikeAndUserId(reviewId, user.getUserId()) > 0) {
             throw new ReviewException(ReviewErrorCode.EXIST_REVIEW_LIKE);
         } else {
             final ReviewLike reviewLike = ReviewLike.builder().user(user).review(review).build();
             reviewQueryService.saveReviewLike(reviewLike);
         }
 
+    }
+
+    public void deleteReviewLike(String accessToken, Long reviewId) {
+        String email = jwtUtil.getEmail(accessToken);
+        User user = userQueryService.findByEmail(email);
+
+        if (reviewQueryService.countReviewLikeAndUserId(reviewId, user.getUserId()) > 0) {
+            ReviewLike reviewLike = reviewQueryService.findReviewLike(reviewId, user.getUserId());
+            reviewQueryService.deleteReviewLike(reviewLike.getId());
+        } else {
+            throw new ReviewException(ReviewErrorCode.NO_REVIEW_LIKE);
+        }
     }
 }

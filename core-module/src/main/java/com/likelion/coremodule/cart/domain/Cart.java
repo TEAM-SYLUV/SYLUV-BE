@@ -6,6 +6,8 @@ import com.likelion.coremodule.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
