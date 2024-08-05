@@ -23,6 +23,10 @@ public class VisitListQueryService {
         return visitListRepository.findById(id).orElseThrow(() -> new VisitException(VisitErrorCode.NO_VISIT_LIST_INFO));
     }
 
+    public void saveVisitList(VisitList visitList) {
+        visitListRepository.save(visitList);
+    }
+
     public List<VisitList> findVisitListsByUserId(Long userId) {
         return visitListRepository.findVisitListsByUserUserId(userId);
     }
