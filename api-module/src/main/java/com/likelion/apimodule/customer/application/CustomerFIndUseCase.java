@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CustomerFIndUseCase {
-    
+
     private final MenuQueryService menuQueryService;
     private final OrderQueryService orderQueryService;
     private final UserQueryService userQueryService;
