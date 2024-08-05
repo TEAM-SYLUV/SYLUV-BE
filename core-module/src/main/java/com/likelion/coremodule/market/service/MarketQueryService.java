@@ -51,7 +51,7 @@ public class MarketQueryService {
     }
 
     @Transactional
-    public void saveVisitListToPreparing(Long storeId, String email) {
+    public void saveVisitListToPayment(Long storeId, String email) {
 
         User user = userQueryService.findByEmail(email);
         Store store = storeQueryService.findStoreById(storeId);
@@ -62,12 +62,12 @@ public class MarketQueryService {
         // 오늘 동일한 사용자가 동일한 가게를 방문한 기록이 있는지 확인
         if (visitListRepository.findVisitListByUserUserIdAndStoreIdAndVisitedDate(user.getUserId(), storeId, today) != null) {
             VisitList visitList = visitListRepository.findVisitListByUserUserIdAndStoreIdAndVisitedDate(user.getUserId(), storeId, today);
-            visitList.updateToPreparing();
+            visitList.updateToPayment();
         } else {
             final VisitList visitList = VisitList.builder()
                     .store(store)
                     .user(user)
-                    .visit_status(VisitStatus.PREPARING)
+                    .visit_status(VisitStatus.PAYMENT)
                     .visitedDate(today)
                     .build();
             visitListRepository.save(visitList);

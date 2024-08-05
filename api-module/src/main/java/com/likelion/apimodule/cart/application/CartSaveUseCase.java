@@ -39,15 +39,23 @@ public class CartSaveUseCase {
         if (findMyCartCount(user.getUserId(), menu.getId()) >= 1) {
 
             Cart cart = cartQueryService.findCartByUserIdAndMenuId(user.getUserId(), menu.getId());
-            cart.setCartQuantity(saveReq.quantity());
+            cart.setCartQuantity(saveReq.quantity() + cart.getQuantity());
+            cartQueryService.saveCart(cart);
 
             return "추가";
         } else {
-            final Cart cart = Cart.builder().user(user).menu(menu).quantity(saveReq.quantity()).build();
+
+            final Cart cart = Cart.builder()
+                    .user(user)
+                    .menu(menu)
+                    .quantity(saveReq.quantity())
+                    .build();
             cartQueryService.saveCart(cart);
+
             return "신규";
         }
     }
+
 
     public void updateMyCart(String accessToken, List<CartUpdateReq> updateReqs) {
 
