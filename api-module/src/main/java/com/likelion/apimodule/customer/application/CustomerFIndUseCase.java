@@ -16,10 +16,7 @@ import com.likelion.coremodule.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,11 +30,19 @@ public class CustomerFIndUseCase {
 
     public List<TotalOrder> getTotalOrder(Long storeId) {
 
+        // Fetch menus by storeId
         List<Menu> menus = menuQueryService.findMenusByStoreId(storeId);
+        if (menus == null || menus.isEmpty()) {
+            return Collections.emptyList(); // No menus found, return empty list
+        }
+
+        // Fetch all order items for the fetched menus
         List<OrderItem> items = new ArrayList<>();
         for (Menu menu : menus) {
             List<OrderItem> item = orderQueryService.findOrderItemsByMenuId(menu.getId());
-            items.addAll(item);
+            if (item != null) {
+                items.addAll(item);
+            }
         }
 
         Map<Long, List<OrderItem>> groupedItems = new HashMap<>();
@@ -48,52 +53,59 @@ public class CustomerFIndUseCase {
         List<TotalOrder> totalOrders = new ArrayList<>();
 
         for (Map.Entry<Long, List<OrderItem>> entry : groupedItems.entrySet()) {
-
             List<OrderItem> orderItems = entry.getValue();
+            if (orderItems.isEmpty()) {
+                continue;
+            }
+
             Order order = orderQueryService.findOrderById(orderItems.get(0).getOrder().getId());
+            if (order == null) {
+                continue;
+            }
+
             User user = userQueryService.findById(order.getUser().getUserId());
+            if (user == null) {
+                continue;
+            }
 
-            VisitList visitList;
-            if (visitListQueryService.countVisitListByStoreAndUser(storeId, user.getUserId()) > 0) {
-                visitList = visitListQueryService.findVisitListByStoreIdAndUserId(storeId, user.getUserId());
-
-                List<MenuOrder> menuOrders = orderItems.stream()
-                        .map(item -> {
-
-                            Menu menu = menuQueryService.findMenuById(item.getMenu().getId());
-
-                            return new MenuOrder(
-                                    menu.getName(),
-                                    menu.getImageUrl(),
-                                    item.getQuantity(),
-                                    menu.getPrice() * item.getQuantity()
-                            );
-                        })
-                        .collect(Collectors.toList());
-
-                Integer totalPrice = menuOrders.stream()
-                        .mapToInt(MenuOrder::totalPrice)
-                        .sum();
-
-                TotalOrder totalOrder = new TotalOrder(
-                        order.getPickUpRoute(),
-                        order.getVisitHour().toString(),
-                        order.getVisitMin().toString(),
-                        user.getName(),
-                        visitList.getVisit_status(),
-                        order.getCreatedAt(),
-                        order.getId(),
-                        order.getOrderNum(),
-                        menuOrders,
-                        totalPrice
-                );
-
-                totalOrders.add(totalOrder);
-            } else {
+            VisitList visitList = visitListQueryService.findVisitListByStoreIdAndUserId(storeId, user.getUserId());
+            if (visitList == null) {
                 throw new VisitException(VisitErrorCode.NO_VISIT_LIST_INFO);
             }
+
+            List<MenuOrder> menuOrders = orderItems.stream()
+                    .map(item -> {
+                        Menu menu = menuQueryService.findMenuById(item.getMenu().getId());
+                        return new MenuOrder(
+                                menu.getName(),
+                                menu.getImageUrl(),
+                                item.getQuantity(),
+                                menu.getPrice() * item.getQuantity()
+                        );
+                    })
+                    .collect(Collectors.toList());
+
+            Integer totalPrice = menuOrders.stream()
+                    .mapToInt(MenuOrder::totalPrice)
+                    .sum();
+
+            TotalOrder totalOrder = new TotalOrder(
+                    order.getPickUpRoute(),
+                    order.getVisitHour().toString(),
+                    order.getVisitMin().toString(),
+                    user.getName(),
+                    visitList.getVisit_status(),
+                    order.getCreatedAt(),
+                    order.getId(),
+                    order.getOrderNum(),
+                    menuOrders,
+                    totalPrice
+            );
+
+            totalOrders.add(totalOrder);
         }
 
         return totalOrders;
     }
+
 }
