@@ -91,7 +91,7 @@ public class HomeFindUseCase {
         // VisitListHome 리스트를 날짜 기준으로 정렬
         visitListHomeList.sort(Comparator.comparing(VisitListHome::visitDate));
         // HotListHome 리스트를 qrVisit 순으로 정렬
-        hotListHomeList.sort(Comparator.comparingInt(HotListHome::totalQrVisit));
+        hotListHomeList.sort(Comparator.comparingInt(HotListHome::totalQrVisit).reversed());
 
         return new HomeInfo(visitListHomeList, hotListHomeList);
     }
