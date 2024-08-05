@@ -13,6 +13,7 @@ public record TotalOrder(
         String userName,
         VisitStatus orderStatus,
         LocalDateTime createdAt,
+        Long orderId,
         String orderNum,
         List<MenuOrder> menu,
         Integer totalPrice
