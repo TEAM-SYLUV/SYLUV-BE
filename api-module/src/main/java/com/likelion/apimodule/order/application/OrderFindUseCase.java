@@ -102,17 +102,17 @@ public class OrderFindUseCase {
         List<MenuOrder> menuOrders = new ArrayList<>();
         boolean reviewYn = reviewQueryService.findReviewByOrderAndUser(order.getId(), user.getUserId()) != null;
 
-        Integer price = 0;
+        int price = 0;
         for (OrderItem o : items) {
 
             Menu singleMenu = menuQueryService.findMenuById(o.getMenu().getId());
-            price += singleMenu.getPrice();
+            price += singleMenu.getPrice() * o.getQuantity();
 
             MenuOrder menuOrder = new MenuOrder(
                     singleMenu.getName(),
                     singleMenu.getImageUrl(),
                     o.getQuantity(),
-                    singleMenu.getPrice() * o.getQuantity()
+                    singleMenu.getPrice()
             );
             menuOrders.add(menuOrder);
         }
