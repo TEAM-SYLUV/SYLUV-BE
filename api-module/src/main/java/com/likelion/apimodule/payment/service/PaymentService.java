@@ -62,7 +62,10 @@ public class PaymentService {
             cartQueryService.deleteCartByUserIdAndCartId(user.getUserId(), id);
         }
 
-        Store store = storeQueryService.findStoreById(menuList.get(0).getId());
+        Store store = null;
+        if (!menuList.isEmpty() && menuList.get(0).getStore() != null) {
+            store = storeQueryService.findStoreById(menuList.get(0).getStore().getId());
+        }
 
         // 토스 페이 결제 승인
         // TossPaymentResponse tossPaymentResponse = paymentClient.confirmPayment(request);
