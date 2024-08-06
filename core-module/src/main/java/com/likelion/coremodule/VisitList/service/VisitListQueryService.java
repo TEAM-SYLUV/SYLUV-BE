@@ -31,6 +31,10 @@ public class VisitListQueryService {
         return visitListRepository.findVisitListsByUserUserId(userId);
     }
 
+    public Integer countVisitListByStoreAndUser(Long storeId, Long userId) {
+        return visitListRepository.countVisitListsByStoreIdAndUserUserId(storeId, userId);
+    }
+
     public VisitList findVisitListByStoreIdAndUserId(Long storeId, Long userId) {
         return visitListRepository.findVisitListByStoreIdAndUserUserId(storeId, userId);
     }
