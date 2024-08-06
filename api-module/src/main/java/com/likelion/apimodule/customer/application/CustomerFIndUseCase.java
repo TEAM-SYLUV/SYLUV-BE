@@ -4,7 +4,6 @@ import com.likelion.apimodule.customer.dto.TotalOrder;
 import com.likelion.apimodule.order.dto.MenuOrder;
 import com.likelion.coremodule.VisitList.domain.VisitList;
 import com.likelion.coremodule.VisitList.service.VisitListQueryService;
-import com.likelion.coremodule.customer.service.CustomerQueryService;
 import com.likelion.coremodule.menu.domain.Menu;
 import com.likelion.coremodule.menu.service.MenuQueryService;
 import com.likelion.coremodule.order.domain.Order;
@@ -16,16 +15,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CustomerFIndUseCase {
 
-    private final CustomerQueryService customerQueryService;
     private final MenuQueryService menuQueryService;
     private final OrderQueryService orderQueryService;
     private final UserQueryService userQueryService;
@@ -34,43 +30,54 @@ public class CustomerFIndUseCase {
     public List<TotalOrder> getTotalOrder(Long storeId) {
 
         List<Menu> menus = menuQueryService.findMenusByStoreId(storeId);
+        if (menus == null || menus.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         List<OrderItem> items = new ArrayList<>();
         for (Menu menu : menus) {
             List<OrderItem> item = orderQueryService.findOrderItemsByMenuId(menu.getId());
-            items.addAll(item);
+            if (item != null) {
+                items.addAll(item);
+            }
         }
 
-        Map<Long, List<OrderItem>> groupedItems = new HashMap<>();
+        List<Order> orders = new ArrayList<>();
         for (OrderItem item : items) {
-            groupedItems.computeIfAbsent(item.getOrder().getId(), k -> new ArrayList<>()).add(item);
+            Order order = orderQueryService.findOrderById(item.getOrder().getId());
+            orders.add(order);
         }
 
         List<TotalOrder> totalOrders = new ArrayList<>();
 
-        for (Map.Entry<Long, List<OrderItem>> entry : groupedItems.entrySet()) {
+        for (Order order : orders) {
 
-            List<OrderItem> orderItems = entry.getValue();
-            Order order = orderQueryService.findOrderById(orderItems.get(0).getOrder().getId());
+            List<OrderItem> orderItems = orderQueryService.findOrderItemByOrderId(order.getId());
+
             User user = userQueryService.findById(order.getUser().getUserId());
             VisitList visitList = visitListQueryService.findVisitListByStoreIdAndUserId(storeId, user.getUserId());
+            if (visitList == null) {
+                continue;
+            }
 
-            List<MenuOrder> menuOrders = orderItems.stream()
-                    .map(item -> {
+            List<Menu> menuList = new ArrayList<>();
+            List<MenuOrder> menuOrders = new ArrayList<>();
+            int price = 0;
 
-                        Menu menu = menuQueryService.findMenuById(item.getMenu().getId());
+            for (OrderItem item : orderItems) {
+                Menu menu = menuQueryService.findMenuById(item.getMenu().getId());
+                menuList.add(menu);
 
-                        return new MenuOrder(
-                                menu.getName(),
-                                menu.getImageUrl(),
-                                item.getQuantity(),
-                                menu.getPrice() * item.getQuantity()
-                        );
-                    })
-                    .collect(Collectors.toList());
+                price += menu.getPrice() * item.getQuantity();
 
-            Integer totalPrice = menuOrders.stream()
-                    .mapToInt(MenuOrder::totalPrice)
-                    .sum();
+                MenuOrder menuOrder = new MenuOrder(
+                        menu.getName(),
+                        menu.getImageUrl(),
+                        item.getQuantity(),
+                        menu.getPrice()
+                );
+                menuOrders.add(menuOrder);
+            }
 
             TotalOrder totalOrder = new TotalOrder(
                     order.getPickUpRoute(),
@@ -82,7 +89,7 @@ public class CustomerFIndUseCase {
                     order.getId(),
                     order.getOrderNum(),
                     menuOrders,
-                    totalPrice
+                    price
             );
 
             totalOrders.add(totalOrder);
@@ -90,4 +97,5 @@ public class CustomerFIndUseCase {
 
         return totalOrders;
     }
+
 }

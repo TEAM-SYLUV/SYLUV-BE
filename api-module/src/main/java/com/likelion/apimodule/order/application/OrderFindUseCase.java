@@ -67,7 +67,7 @@ public class OrderFindUseCase {
             Integer price = 0;
             for (OrderItem o : orderItems) {
                 Menu singleMenu = menuQueryService.findMenuById(o.getMenu().getId());
-                price += singleMenu.getPrice();
+                price += singleMenu.getPrice() * o.getQuantity();
             }
 
             OrderInfo orderInfo = new OrderInfo(

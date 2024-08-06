@@ -23,7 +23,9 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -49,18 +51,24 @@ public class PaymentService {
         User user = userQueryService.findByEmail(email);
 
         List<Menu> menuList = new ArrayList<>();
+        Map<Long, Integer> menuQuantityMap = new HashMap<>();
+
         for (Long id : request.cartIds()) {
             Cart cart = cartQueryService.findCartById(id);
             Menu menu = menuQueryService.findMenuById(cart.getMenu().getId());
             menuList.add(menu);
+            menuQuantityMap.put(menu.getId(), cart.getQuantity());
 
             cartQueryService.deleteCartByUserIdAndCartId(user.getUserId(), id);
         }
 
-        Store store = storeQueryService.findStoreById(menuList.get(0).getId());
+        Store store = null;
+        if (!menuList.isEmpty() && menuList.get(0).getStore() != null) {
+            store = storeQueryService.findStoreById(menuList.get(0).getStore().getId());
+        }
 
         // 토스 페이 결제 승인
-//        TossPaymentResponse tossPaymentResponse = paymentClient.confirmPayment(request);
+        // TossPaymentResponse tossPaymentResponse = paymentClient.confirmPayment(request);
 
         // 방문 리스트 결제 완료로 저장 + 주문 테이블 저장
         marketQueryService.saveVisitListToPayment(store.getId(), user.getEmail());
@@ -71,15 +79,15 @@ public class PaymentService {
         orderQueryService.saveOrder(order);
 
         for (Menu value : menuList) {
-
-            Long m = value.getId();
-            Menu menu = menuQueryService.findMenuById(m);
-            int quantity = request.amount() / menu.getPrice();
+            Long menuId = value.getId();
+            Menu menu = menuQueryService.findMenuById(menuId);
+            int quantity = menuQuantityMap.get(menuId);
 
             final OrderItem orderItem = OrderItem.builder().order(order).menu(menu).quantity(quantity).build();
             orderQueryService.saveOrderItem(orderItem);
         }
     }
+
 
     public String generateOrderNumber(LocalDateTime createdAt) {
         String datePart = createdAt.format(ORDER_NUMBER_DATE_FORMAT);
