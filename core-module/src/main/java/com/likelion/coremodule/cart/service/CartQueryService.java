@@ -19,6 +19,10 @@ public class CartQueryService {
         cartRepository.save(cart);
     }
 
+    public Cart findCartByMenuId(Long menuId) {
+        return cartRepository.findCartByMenuId(menuId);
+    }
+
     public Cart findCartById(Long cartId) {
         return cartRepository.findById(cartId).orElseThrow(() -> new CartException(CartErrorCode.NO_CART_INFO));
     }

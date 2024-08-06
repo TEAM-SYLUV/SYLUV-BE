@@ -74,7 +74,8 @@ public class PaymentService {
 
             Long m = value.getId();
             Menu menu = menuQueryService.findMenuById(m);
-            int quantity = request.amount() / menu.getPrice();
+            Cart cart = cartQueryService.findCartByMenuId(menu.getId());
+            int quantity = cart.getQuantity();
 
             final OrderItem orderItem = OrderItem.builder().order(order).menu(menu).quantity(quantity).build();
             orderQueryService.saveOrderItem(orderItem);
